@@ -1,0 +1,21 @@
+{
+  "name": "muster",
+  "displayName": "Muster",
+  "description": "Structured agentic development for Claude Code. Seven commands take you from a half-formed idea to a merged pull request, with you in control at every gate.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Mark Stent",
+    "email": "mark@markstent.co.za"
+  },
+  "homepage": "https://github.com/markstent/muster",
+  "repository": "https://github.com/markstent/muster",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "tdd",
+    "code-review",
+    "agents",
+    "github",
+    "slash-commands"
+  ]
+}

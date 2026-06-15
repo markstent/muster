@@ -1,0 +1,15 @@
+{
+  "name": "muster",
+  "owner": {
+    "name": "Mark Stent",
+    "email": "mark@markstent.co.za"
+  },
+  "description": "Muster: structured agentic development for Claude Code.",
+  "plugins": [
+    {
+      "name": "muster",
+      "source": "./",
+      "description": "Seven commands take you from a half-formed idea to a merged pull request, with you in control at every gate."
+    }
+  ]
+}
