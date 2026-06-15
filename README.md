@@ -258,17 +258,19 @@ is current.
 
 **What happens:** Working from the `/think` conversation (it does not
 re-interview), Muster sketches the test seams, then writes one markdown file,
-`docs/specs/<date>-<slug>.md`, containing the spec (Problem / Solution / Test
-seams / Done when / Out of scope / Touches) and every task as a vertical slice
-with concrete acceptance criteria and a scope boundary. It writes the file but
-does not print it back, and creates nothing on GitHub yet.
+`docs/specs/<date>-<slug>.md`, containing the spec (Problem / Solution / a
+focused User stories list / Test seams / Done when / Out of scope / Touches) and
+every task as a vertical slice tagged `AFK` or `HITL` (a hint to triage), with
+concrete acceptance criteria and a scope boundary. It writes the file but does
+not print it back, and creates nothing on GitHub yet.
 
-**The gate:** It prints `Spec written to docs/specs/<file> - <N> tasks` and
-waits. Edit the file directly in your editor, then reply `create` to generate
-the issues, or `cancel` to stop (the file stays on disk). On `create` it
-re-reads the file so your edits win, then creates the spec issue (label `spec`)
-and one task issue per slice (labels `task` + `ready`), cross-links them, and
-commits just the spec file.
+**The gate:** It prints the slice breakdown (each slice with its AFK/HITL tag and
+files) and asks you to sanity-check the cut - granularity, any split/merge, the
+tags - before any issue exists. Edit the file directly in your editor, then reply
+`create` to generate the issues, or `cancel` to stop (the file stays on disk). On
+`create` it re-reads the file so your edits win, then creates the spec issue
+(label `spec`) and one task issue per slice (labels `task` + `ready`),
+cross-links them, and commits just the spec file.
 
 **Labels after:** spec issue -> `spec`; each task -> `task` + `ready`.
 

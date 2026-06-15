@@ -81,6 +81,8 @@ Show counts and a one-line summary per issue.
 
 1. **Gather context.** Read the full issue - body, comments, labels, dates.
    Parse any prior triage notes so you don't re-ask resolved questions.
+   If the issue carries a `Type:` hint from /spec (AFK/HITL), treat it as
+   advisory only - your risk and state decision is authoritative and overrides it.
    Explore the codebase using the domain glossary, respecting ADRs in the area.
    Check `.out-of-scope/` and surface any prior rejection resembling this issue.
    Check whether any other open task or PR touches the same files.

@@ -54,8 +54,15 @@ just write it.
 ## Solution
 <what, not how. 2-4 sentences.>
 
+## User stories
+<a focused numbered list - "As an <actor>, I want <feature>, so that <benefit>".
+ Cover the feature's real paths, not every edge; keep it tight. These are what
+ the inner-review Spec axis and /triage check the work against.>
+1. As a <actor>, I want <feature>, so that <benefit>.
+
 ## Test seams
-<where this will be tested, and why those seams.>
+<where this will be tested, and why those seams. Name prior art - similar tests
+ already in the codebase - so the Worker follows an existing pattern.>
 
 ## Done when
 - [ ] <concrete, independently verifiable criterion>
@@ -71,8 +78,11 @@ just write it.
 ## Tasks
 
 ### Task 1 - <verb> <specific thing>
+**Type:** AFK | HITL  <AFK = an agent can build and merge it unattended; HITL =
+needs a human decision or review. A hint only; /triage makes the binding call.>
 **What:** <1-2 sentences. The behaviour this slice delivers.>
 **Why:** <which done-criterion from the spec this satisfies.>
+**Covers:** <which user-story numbers this slice satisfies.>
 **Acceptance:**
 - [ ] <specific and testable. Name files, functions, or behaviours.>
 - [ ] Tests written for all new behaviour, through the seam above
@@ -88,6 +98,14 @@ Content discipline:
   functions, or observable behaviours, not "works correctly".
 - Use the project's domain glossary vocabulary in every title and body.
 - Problem and Solution stay what-not-how.
+- User stories stay from the actor's perspective, not implementation steps.
+- `Type` (AFK/HITL) is a hint to speed triage, not a routing decision. Prefer
+  AFK; mark HITL only when a human decision, design review, or high-risk surface
+  is genuinely involved. /triage confirms or overrides it.
+- No code snippets in the body. Exception: if a prototype produced a snippet
+  that encodes a decision more precisely than prose can (a state machine, schema,
+  or type shape), inline just the decision-rich part and note it came from a
+  prototype - never a working demo.
 - Each task is a vertical slice (a tracer bullet cutting through every layer), not
   a horizontal "all the frontend" / "all the backend" split. No task may depend on
   another in this batch finishing first - if one does, recut.
@@ -101,11 +119,23 @@ Content discipline:
 
 ## Step 4 - Review gate
 
-Print only this, then wait:
+Print the slice breakdown so I can sanity-check the cut before any issue exists,
+then wait:
 
 ```
 Spec written to docs/specs/<file> - <N> tasks.
-Review and edit it directly, then reply: `create` to generate the issues, or `cancel`.
+
+Proposed slices:
+  1. <title>   <AFK|HITL>   touches: <files>
+  2. <title>   <AFK|HITL>   touches: <files>
+
+Before I create the issues:
+- Is the granularity right (any slice too coarse or too fine)?
+- Should any slices merge or split?
+- Are the AFK/HITL tags correct?
+
+Edit the file directly to adjust, then reply: `create` to generate the issues,
+or `cancel`.
 ```
 
 If any same-file slices survived the independence check, append this line before
@@ -124,12 +154,12 @@ Consider merging them into one task, or proceed knowing it needs manual sequenci
 Re-read the file first so my edits are honoured. Then:
 
 1. Create the spec issue with `gh issue create`, label `spec`. Body = the spec
-   section (Problem / Solution / Test seams / Done when / Out of scope / Touches),
-   ending with a line: `Spec file: docs/specs/<file>`. Save the number as
-   `$SPEC_NUMBER`.
+   section (Problem / Solution / User stories / Test seams / Done when / Out of
+   scope / Touches), ending with a line: `Spec file: docs/specs/<file>`. Save the
+   number as `$SPEC_NUMBER`.
 2. For each `### Task` in the file, create an issue with labels `task` and `ready`.
-   Title: `<task title> (spec #$SPEC_NUMBER)`. Body = that task's What / Why /
-   Acceptance / Scope.
+   Title: `<task title> (spec #$SPEC_NUMBER)`. Body = that task's Type / What /
+   Why / Covers / Acceptance / Scope.
 3. Comment on the spec issue listing every child task number.
 4. Commit just the spec file (keeps the tree clean for /build):
    ```bash
