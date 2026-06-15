@@ -34,8 +34,12 @@ Don't stop until every one of these is settled. Follow new branches as they open
 When every branch is resolved, summarise back to me: problem, solution (what,
 not how), done-criteria, explicit non-goals. Ask whether it matches what I meant.
 
-If I confirm: tell me to run /spec.
 If I correct something: resolve the new branch, then re-summarise.
+If I confirm, end with:
+
+```
+**Next:** run /spec
+```
 
 ## Rules
 

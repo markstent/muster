@@ -3,8 +3,8 @@ name: review
 description: >
   Review the changes since a fixed point along two axes — Standards (does the
   code follow this repo's documented conventions?) and Spec (does it implement
-  what the issue asked for?). Runs both as parallel sub-agents and reports them
-  side by side. Use before merging any PR, or to "review since X".
+  what the issue asked for?). Runs both as parallel sub-agents and reports one
+  compact verdict. Use before merging any PR, or to "review since X".
 ---
 
 # Review
@@ -58,37 +58,56 @@ One message, two Task tool calls.
 Standards sub-agent:
 ```
 Read these standards docs: [list]. Then read this diff: [diff].
-Report every place the diff violates a documented standard. Cite the standard
-(file + rule). Distinguish hard violations from judgement calls. Skip anything
-tooling enforces. Also flag security issues: unsanitised input, hardcoded
-secrets, unvalidated endpoints, language-specific risks (SQL injection,
-prototype pollution, path traversal). Under 400 words. End: STANDARDS PASS/FAIL.
+Find every place the diff violates a documented standard. Cite the standard
+(file + rule). Skip anything tooling enforces. Also flag security issues:
+unsanitised input, hardcoded secrets, unvalidated endpoints, language-specific
+risks (SQL injection, prototype pollution, path traversal).
+
+Return ONLY a terse bullet list, one finding per line, no prose:
+  - [x] file:line — issue (cite standard)        # hard violation / security
+  - [!] file:line — issue (cite standard)        # judgement call
+Then a final line: VERDICT: PASS  or  VERDICT: FAIL
+If there are no findings: "- [ok] no standards violations" then VERDICT: PASS.
 ```
 
 Spec sub-agent:
 ```
 Read the spec: [path or contents]. Then read this diff: [diff].
-Report: (a) requirements asked for that are missing or partial; (b) behaviour
-not asked for (scope creep); (c) requirements that look implemented but wrong.
-Confirm tests exist for new behaviour and test through public interfaces, not
-implementation details. Quote the spec line for each finding. Under 400 words.
-End: SPEC PASS/FAIL.
+Find: (a) requirements missing or partial; (b) behaviour not asked for (scope
+creep); (c) requirements that look implemented but wrong. Confirm tests exist
+for new behaviour and test through public interfaces, not implementation details.
+
+Return ONLY a terse bullet list, one finding per line, no prose:
+  - [x] issue — quote the spec line it relates to
+  - [!] issue — quote the spec line it relates to
+Then a final line: VERDICT: PASS  or  VERDICT: FAIL
+If everything is satisfied: "- [ok] all acceptance criteria met" then VERDICT: PASS.
 ```
 
 If the spec is missing, skip the Spec sub-agent and note it.
 
 ## Step 5 — Aggregate
 
-Present both reports under `## Standards` and `## Spec`, verbatim or lightly
-cleaned. Do not merge or rerank — the axes are deliberately independent.
-
-End with a one-line summary: findings per axis, and the single worst issue.
+Combine the two bullet lists into one compact, verdict-first report. Do not paste
+the sub-agent prose; use their bullets directly. Do not merge or rerank the axes.
 
 ```
-Verdict: [SAFE TO MERGE | DO NOT MERGE]
-Standards: [PASS | FAIL] · Spec: [PASS | FAIL]
-Worst issue: [one line, or "none"]
+## Review — PR #N        (or the diff range)
+
+**Verdict: [SAFE TO MERGE | DO NOT MERGE]** · Standards: [PASS | FAIL] · Spec: [PASS | FAIL]
+
+**Standards ([n])**
+- [x] file:line — issue (security)
+- [!] file:line — issue
+
+**Spec ([n])**
+- [ok] all acceptance criteria met
+
+**Worst:** [one line, or "none"]
+**Next:** fix and re-run /review, or merge on GitHub if SAFE TO MERGE
 ```
+
+Markers: `[x]` blocker/fail · `[!]` judgement call · `[ok]` pass. No emojis.
 
 ## Rules
 

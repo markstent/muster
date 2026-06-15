@@ -71,8 +71,14 @@ Inside Claude Code:
 /plugin install muster@muster
 ```
 
-Commands appear as `/muster:think`, `/muster:spec`, and so on. Update later
-from the `/plugin` menu.
+Commands appear as `/muster:think`, `/muster:spec`, and so on.
+
+To update to a newer release later:
+
+```
+/plugin marketplace update muster
+/plugin update muster@muster
+```
 
 ### Option B — symlink (bare command names)
 

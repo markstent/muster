@@ -153,25 +153,25 @@ If I say "move #42 to agent-ready", trust me. Confirm what you're about to do
 
 ## After processing
 
-Print:
+Print a compact, verdict-first summary (rendered markdown, no ASCII boxes):
 
 ```
-TRIAGE COMPLETE
+## Triage complete
 
-agent-ready ([count]):
-  #[N]  risk:[low|med]  [title]
+**Agent-ready (n)**
+- #N  risk:low — title
 
-needs-human-input ([count]):
-  #[N]  risk:[risk]  [title]  —  [reason]
+**Needs human input (n)**
+- #N  risk:high — title — reason
 
-needs-info ([count]):
-  #[N]  [title]
+**Needs info (n)**
+- #N — title
 
-Skipped (already triaged): [count]
-Remaining in queue:        [count]
-
-Next: run /build to execute agent-ready tasks.
+n skipped (already triaged) · n left in queue
+**Next:** run /build
 ```
+
+Omit any bucket with zero issues.
 
 ## Rules
 
