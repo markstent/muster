@@ -91,6 +91,13 @@ Content discipline:
 - Each task is a vertical slice (a tracer bullet cutting through every layer), not
   a horizontal "all the frontend" / "all the backend" split. No task may depend on
   another in this batch finishing first - if one does, recut.
+- Slice independence check: before writing the file, compare every task's `Scope`.
+  Two tasks must not touch the same file. If they do, recut so they are
+  file-disjoint. If you genuinely cannot make them disjoint, keep them but add a
+  line `> Note: must follow Task N (touches the same files; cannot build in
+  parallel)` under the later task, and flag it at the review gate. Same-file
+  slices cannot build autonomously side by side: the later one needs the earlier
+  PR merged first, which is a manual step the pipeline will not do for you.
 
 ## Step 4 - Review gate
 
@@ -99,6 +106,15 @@ Print only this, then wait:
 ```
 Spec written to docs/specs/<file> - <N> tasks.
 Review and edit it directly, then reply: `create` to generate the issues, or `cancel`.
+```
+
+If any same-file slices survived the independence check, append this line before
+waiting:
+
+```
+Heads-up: tasks <a> and <b> touch the same files, so they cannot build
+autonomously in parallel - the later one will need the earlier PR merged first.
+Consider merging them into one task, or proceed knowing it needs manual sequencing.
 ```
 
 `cancel` → print "Nothing created." and stop. The file stays on disk for later.

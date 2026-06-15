@@ -114,49 +114,44 @@ repo - it only needs `gh` authenticated against the target repo.)
 
 ## The flow
 
+```mermaid
+flowchart TD
+    idea([New idea])
+
+    subgraph plan ["PLAN: you and the agent"]
+        think["/think<br/>grill the idea until<br/>every branch resolves"]
+        context["/context<br/>write CONTEXT.md<br/>once per repo"]
+        spec["/spec<br/>spec file you edit,<br/>then spec + task issues"]
+    end
+
+    subgraph manage ["MANAGE: Manager agent (read-only on code)"]
+        triage["/triage<br/>classify, assess risk, route<br/>writes labels + comments only"]
+    end
+
+    subgraph execute ["EXECUTE: Worker coordinator"]
+        build["/build<br/>spawn Workers with TDD<br/>verify + auto inner review"]
+    end
+
+    risk{"risk:high<br/>or ambiguous?"}
+    gate{"You approve<br/>the diff?"}
+    pr[["PR opened<br/>never auto-merged"]]
+    review["/review<br/>final two-axis check"]
+    merge([You merge on GitHub])
+    human["needs-human-input<br/>you implement or decide"]
+
+    idea --> think --> context --> spec --> triage
+    triage --> risk
+    risk -- yes --> human
+    risk -- no --> build
+    build --> gate
+    gate -- reject --> build
+    gate -- approve --> pr
+    pr --> review --> merge
 ```
-new idea
-   |
-   v
-/think        resolve the idea, one question at a time, recommended answers
-   |
-/context      run once per repo; refresh when major concepts change
-   |
-/spec         spec issue + task issues (vertical slices) on GitHub
-   |             tasks labelled: task + ready
-   v
-/triage       MANAGER AGENT (read-only on code)
-   |             state machine: bug/enhancement + one of
-   |             needs-triage / needs-info / agent-ready /
-   |             needs-human-input / wontfix
-   |             risk gate: low / medium / high
-   |             high risk never becomes agent-ready
-   |
-   |  agent-ready tasks only
-   v
-/build        WORKER COORDINATOR
-   |             max 3 tasks per run (burnout cap)
-   |             groups by independence -> parallel where safe
-   |             spawns Worker sub-agents (TDD: vertical slices, one
-   |               test -> one impl, behaviour not implementation)
-   |             verifies: tests pass, scope respected, branch clean
-   |             AUTO inner review, two parallel axes:
-   |               Standards (conventions + security) and Spec (does it
-   |               match the issue?)
-   |             rejected -> needs-work, never reaches you
-   |             presents full summary -> waits for your terminal approval
-   |             approve -> PR opened (never auto-merged)
-   |             reject  -> sent back with your reason as an issue comment
-   |
-   v
-/review       optional final two-axis check on any PR
-   |
-   v
-you merge     always manual, always yours
-   |
-   v
-/status       check what's left, what's next
-```
+
+`/status` sits outside the line: run it any time to see where everything is and
+what to do next. The diagram shows the happy path; the granular tutorial below
+walks every gate, label change, and decision point one command at a time.
 
 ---
 
@@ -217,46 +212,166 @@ bash setup-labels.sh
 
 ---
 
-## A worked example
+## Tutorial: from idea to a merged PR
 
-```
-You:  /think
-      I want a rate limiter for my API.
-Muster: [asks about algorithm, storage, scope, limits, what's out of scope,
-         one question at a time, recommending an answer each time]
-You:  [answer until it summarises and you confirm]
+This is the whole pipeline, one command at a time, following a single example:
+adding a rate limiter to an API. For each step you get what you type, what
+Muster does under the hood, where it stops for you, and which labels move.
 
-You:  /context        (first time in this repo)
-Muster: [writes CONTEXT.md with your stack and domain terms]
+Run the commands in order. The only setup you do once per repo is `/context`
+and `setup-labels.sh`; everything else repeats per idea.
 
-You:  /spec
-Muster: [writes spec issue #12, then task issues #13, #14, #15 - each a
-         vertical slice with a test seam and scope boundary]
+### 1. `/think` - resolve the idea
 
-You:  /triage
-Muster: [reads the code, classifies each task, assigns risk, posts an agent
-         brief on the low/medium ones, routes a schema change to
-         needs-human-input because it's high risk]
+**You type:** `/think`, then `I want a rate limiter for my API.`
 
-You:  /build
-Muster: [shows the execution plan: #13 and #14 can run in parallel, #15 waits]
-You:  yes
-Muster: [spawns Workers, each writes a failing test then code then refactors,
-         runs a two-axis inner review, then:]
-        BATCH COMPLETE - AWAITING YOUR APPROVAL
-        [+] #13  risk:low  add token bucket  Standards PASS · Spec PASS
-        [+] #14  risk:low  add limiter middleware  Standards PASS · Spec PASS
-You:  13            (inspect the diff)
-You:  approve all
-Muster: [opens PR for #13 and #14, linked to spec #12]
+**What happens:** Muster interviews you one question at a time, and for each
+question it offers its own recommended answer so you can just confirm or
+correct. It walks the decision tree - algorithm, where state lives, per-key vs
+global, the limits, what is explicitly out of scope - and treats vague answers
+("roughly", "something like that") as unresolved and asks again. If a question
+can be answered by reading the code, it reads the code instead of asking. It
+writes nothing: the output is shared understanding, not a file.
 
-You:  /review 13
-Muster: [final two-axis check, SAFE TO MERGE]
-You:  [merge on GitHub]
+**The gate:** It ends by summarising problem, solution, done-criteria, and
+non-goals, and asks whether that matches. Correct it and it re-summarises;
+confirm and it prints `Next: run /spec`.
 
-You:  /status
-Muster: [#15 still needs-human-input; one spec in progress]
-```
+### 2. `/context` - write the shared brain (once per repo)
+
+**You type:** `/context`
+
+**What happens:** Muster reads your README, recent git log, package manifests,
+and any existing ADRs / CONTRIBUTING / CLAUDE.md, then writes a single file,
+`CONTEXT.md`, at the repo root: stack, a domain glossary, architecture,
+conventions, dated decisions, and out-of-scope notes. Every later command reads
+this file, so sub-agents speak your vocabulary and respect your prior choices.
+
+**The gate:** None, beyond a targeted question if something central is
+ambiguous. On later runs it refreshes in place and flags before removing any
+existing decision. Skip this step on repos where `CONTEXT.md` already exists and
+is current.
+
+### 3. `/spec` - turn the idea into issues
+
+**You type:** `/spec`
+
+**What happens:** Working from the `/think` conversation (it does not
+re-interview), Muster sketches the test seams, then writes one markdown file,
+`docs/specs/<date>-<slug>.md`, containing the spec (Problem / Solution / Test
+seams / Done when / Out of scope / Touches) and every task as a vertical slice
+with concrete acceptance criteria and a scope boundary. It writes the file but
+does not print it back, and creates nothing on GitHub yet.
+
+**The gate:** It prints `Spec written to docs/specs/<file> - <N> tasks` and
+waits. Edit the file directly in your editor, then reply `create` to generate
+the issues, or `cancel` to stop (the file stays on disk). On `create` it
+re-reads the file so your edits win, then creates the spec issue (label `spec`)
+and one task issue per slice (labels `task` + `ready`), cross-links them, and
+commits just the spec file.
+
+**Labels after:** spec issue -> `spec`; each task -> `task` + `ready`.
+
+> Slices are meant to be file-disjoint so each can build and merge alone. If two
+> slices must touch the same file, `/spec` flags it at the review gate, and
+> `/build` defers the later one ("merge PR #N first") until the earlier PR is
+> merged - Muster never auto-merges to unblock it. Prefer one larger task over
+> same-file slices.
+
+### 4. `/triage` - the Manager decides what is safe
+
+**You type:** `/triage`
+
+**What happens:** This is the Manager agent. It has read-only access to code and
+writes only labels and comments - it never branches, edits, or runs tests. It
+takes up to 10 open `task` issues, oldest first, reads each against `CONTEXT.md`
+and the code, reproduces bugs by reasoning through the path, and recommends a
+category (`bug` / `enhancement`), a risk (`risk:low` / `medium` / `high`), and a
+state. Risk gates autonomy: `agent-ready` only if risk is low, or medium with
+complete, unambiguous criteria. High risk, vagueness, or a clash with
+CONTEXT.md routes to `needs-human-input` instead. In our example the token
+bucket and middleware tasks come back `risk:low` and `agent-ready`; a session
+schema change is `risk:high`, so it goes to `needs-human-input`.
+
+**The gate:** It recommends and waits for your direction unless you told it to
+act autonomously. You can override with "move #42 to agent-ready" and it
+confirms before acting. Every comment it posts starts with
+`> *Generated by Muster triage.*`.
+
+**Labels after:** each task gets exactly one state label and a `risk:*` label;
+`agent-ready` tasks keep `ready`; `needs-info` / `needs-human-input` drop
+`ready`.
+
+### 5. `/build` - the Worker coordinator builds it
+
+**You type:** `/build`
+
+**What happens:** First it checks the tree is clean, you are on the base branch,
+and `gh` is authenticated. It fetches `agent-ready` + `ready` tasks, capped at 3
+per run (the burnout cap), and prints an execution plan: tasks touching
+different files run in parallel, tasks sharing files run sequentially.
+
+**Gate A - start:** Reply `yes` to begin, or name issue numbers to skip. Before
+spawning any `risk:medium` task it pauses 10 seconds so you can type `hold [N]`
+to skip it (skipped -> `on-hold`); low-risk tasks start immediately.
+
+It then spawns a Worker sub-agent per task. Each Worker branches
+(`task/[N]-[slug]`) and works in vertical-slice TDD: one failing test through
+the named seam, minimum code to pass, repeat - never all tests up front - then
+refactors only on green, and touches only files in scope. The coordinator
+verifies each returned report (status PASS, tests present and passing, diff
+matches declared scope, at least one commit, no silent out-of-scope work). A
+failure labels the task `blocked` and is surfaced, not hidden.
+
+Every task that passes verification then goes through an automatic inner review:
+two sub-agents in parallel, Standards (conventions + security) and Spec (does
+the diff match the issue?), kept separate so one cannot mask the other. Either
+axis failing labels the task `needs-work` and it never reaches you; a
+security-relevant finding is always a fail.
+
+**Gate B - approval:** Once the batch is verified and reviewed, it prints
+`BATCH COMPLETE - AWAITING YOUR APPROVAL` listing what is ready (with
+`Standards PASS / Spec PASS`) and what is not, then waits. Your options:
+
+- `[N]` (a number) - print the full diff for that task, then re-ask.
+- `approve [N]` / `approve all` - open the PR(s), never merge.
+- `reject [N]` - it asks what needs to change, posts your reason as a comment.
+- `stop` - pause and exit; labels are already applied, so nothing is lost.
+
+On approval it opens a PR (`Closes #N`, linked to the spec, with the worker
+summary, inner-review verdict, and test output), then prints
+`PR opened for #N. You merge when ready - never auto-merged.`
+
+**Labels after:** approved -> `in-review`, drops `ready` + `agent-ready`;
+rejected -> `needs-work`; blocked -> `blocked`; held -> `on-hold`.
+
+### 6. `/review` - optional final check on a PR
+
+**You type:** `/review 13` (or a SHA, branch, tag, or `main`)
+
+**What happens:** A read-only two-axis review of the diff against the fixed
+point you supply. It finds the originating issue from the commit messages, then
+runs Standards and Spec sub-agents in parallel and reports one compact,
+verdict-first summary: `SAFE TO MERGE` or `DO NOT MERGE`. A security finding or
+a Spec fail is always `DO NOT MERGE`. It suggests nothing beyond the two axes
+and never modifies code.
+
+**The gate:** Advisory. It tells you whether to merge; it does not merge.
+
+### 7. You merge
+
+Merging is always manual and always yours - Muster never auto-merges. Merge the
+PR on GitHub when you are satisfied.
+
+### Any time: `/status`
+
+**You type:** `/status`
+
+**What happens:** A read-only snapshot of the whole pipeline: open specs, every
+task bucketed by its state label, open PRs, recent commits, and a prioritised
+"what to do next" (merge a waiting PR > `/build` ready tasks > `/triage` the
+queue, and so on). It changes nothing. In our example it would still show the
+`risk:high` schema task sitting in `needs-human-input` for you to handle.
 
 ---
 

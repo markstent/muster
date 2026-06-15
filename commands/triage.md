@@ -53,6 +53,11 @@ Routing rule:
   unambiguous with complete acceptance criteria.
 - `needs-human-input` if risk is high, the issue is vague, it contradicts
   CONTEXT.md or an ADR, or another open task/PR already touches the same files.
+  When the blocker is specifically an open (unmerged) PR or branch touching the
+  same files, the reason must be explicit and actionable: "blocked by open PR #N
+  - merge it first, then re-triage this issue." A Worker would otherwise branch
+  from a `main` that lacks that PR's code, so this stays human-gated until the PR
+  merges. This is not a permanent rejection - it clears the moment PR #N merges.
 
 Never assign `agent-ready` to a `risk:high` issue. When uncertain, assign the
 higher risk and route to `needs-human-input`.
@@ -125,7 +130,9 @@ Acceptance:
 Codebase context:
 [What the relevant code currently does.]
 
-Conflicts: [open task/PR touching the same files, or "none"]
+Conflicts: [if an open unmerged PR/branch touches the same files: "blocked by
+           open PR #N - merge it first, then re-triage"; else open task touching
+           the same files, or "none"]
 ```
 
 ## Needs-info template

@@ -43,6 +43,23 @@ Print the queue before doing anything.
 
 ---
 
+## Step 1b - Open-PR overlap check (deferral)
+
+A Worker branches from `main`, so a task that touches files an open PR has not
+yet merged would build against stale code. Detect this and defer, deterministically.
+
+```bash
+gh pr list --state open --json number,headRefName,files
+```
+
+For each queued task, compare its declared scope against the files in every open
+PR. If they overlap, the task is **Deferred**: do not spawn a Worker for it, and
+record the reason "merge PR #N first." Continue with the non-overlapping tasks.
+This is a per-run state, not a label - re-running /build after PR #N merges picks
+the task up normally.
+
+---
+
 ## Step 2 - Execution plan
 
 Read each task's "Touch only" scope. Tasks touching different files run in
@@ -55,6 +72,8 @@ Parallel batch:
   #[N]  risk:[low|med]  [title]  ->  touches: [files]
 Sequential (shared files):
   #[N]  risk:[low|med]  [title]  ->  touches: [files]  (after #N)
+Deferred (open PR conflict):
+  #[N]  [title]  ->  merge PR #[P] first
 
 [X] of 3 tasks queued. [Y] agent-ready tasks remain.
 Type 'yes' to start, or name issue numbers to skip.
@@ -240,6 +259,11 @@ Not ready ([count]):
       Reason: [verification failure | Standards FAIL | Spec FAIL]
       Action: [label applied, comment posted]
 
+Deferred ([count]):
+  [-] #[N]  [title]
+      Reason: open PR #[P] touches the same files - merge it first
+      Action: none (no label; re-run /build after PR #[P] merges)
+
 Commands:
   [N]          show full diff for issue N
   approve [N]  approve task, open PR
@@ -303,6 +327,7 @@ Open PRs:          [titles + URLs]
 Blocked:           [list or "none"]
 Inner-review fail: [list or "none"]
 Sent back:         [list or "none"]
+Deferred:          [#N - merge PR #P first, or "none"]
 
 Next:
 - Merge open PRs on GitHub (always manual)
