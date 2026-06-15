@@ -24,7 +24,7 @@ Don't stop until every one of these is settled. Follow new branches as they open
 - The exact problem, from my perspective. Why this, why now?
 - Who the user is. For personal projects: which version of me, doing what?
 - The single most important behaviour.
-- What "done" looks like — how I would verify it worked.
+- What "done" looks like - how I would verify it worked.
 - What I am explicitly NOT building.
 - The riskiest assumption in the plan.
 - What existing code or systems this touches.

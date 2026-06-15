@@ -1,7 +1,7 @@
 ---
 name: context
 description: >
-  Build and maintain CONTEXT.md — the shared domain memory every other Muster
+  Build and maintain CONTEXT.md - the shared domain memory every other Muster
   command reads. Run once per repo, then refresh when major concepts change or
   a prior decision is reversed. Reads the repo; writes only CONTEXT.md.
 ---
@@ -11,32 +11,32 @@ description: >
 Write and maintain `CONTEXT.md` at the repo root. This file is the shared brain:
 `/spec`, `/triage`, and `/build` all read it so sub-agents speak your domain
 language and respect your prior decisions. It is agent working memory, not
-human-facing documentation — keep it dense and current, not pretty.
+human-facing documentation - keep it dense and current, not pretty.
 
 You read the codebase. You write exactly one file: `CONTEXT.md`. Touch nothing
 else.
 
-## Step 1 — Detect first run vs refresh
+## Step 1 - Detect first run vs refresh
 
 - If `CONTEXT.md` does not exist, this is a first run: build it from scratch.
 - If it exists, this is a refresh: read it first, preserve what is still true,
-  and update only what has changed. Never silently drop an existing decision —
+  and update only what has changed. Never silently drop an existing decision -
   if you believe one is now wrong, flag it to me before removing it.
 
-## Step 2 — Read the repo
+## Step 2 - Read the repo
 
 - `README.md` and any top-level docs.
 - `git log --oneline -20` and the most recently changed source files.
 - Package manifests (`package.json`, `pyproject.toml`, `go.mod`, etc.) for the
   stack and tooling.
 - Any existing `docs/adr/`, `CONTRIBUTING.md`, `CLAUDE.md`/`AGENTS.md`, or
-  style/standards files — these are existing decisions, not raw material to
+  style/standards files - these are existing decisions, not raw material to
   rewrite.
 
 If something central is ambiguous (the core domain noun, the primary entry
 point), ask me one targeted question rather than guessing.
 
-## Step 3 — Write CONTEXT.md
+## Step 3 - Write CONTEXT.md
 
 Use this structure. Scale each section to the repo; omit a heading only if it
 genuinely does not apply.
@@ -50,7 +50,7 @@ genuinely does not apply.
 
 ## Domain glossary
 [The nouns and verbs of this project, defined. The vocabulary every spec,
- task, and review must use. Two columns: term — meaning.]
+ task, and review must use. Two columns: term - meaning.]
 
 ## Architecture
 [The shape of the system in a few sentences. Entry points, major modules,
@@ -63,14 +63,14 @@ genuinely does not apply.
 
 ## Decisions (ADRs)
 [Dated, one-line architectural decisions and their rationale. Newest first.
- Format: YYYY-MM-DD — decision — why. These are binding on /triage and /build.]
+ Format: YYYY-MM-DD - decision - why. These are binding on /triage and /build.]
 
 ## Out of scope
 [Things deliberately not built or not done, and why. Mirrors anything in
  .out-of-scope/.]
 ```
 
-## Step 4 — Summarise
+## Step 4 - Summarise
 
 Print what you wrote or changed:
 
@@ -90,5 +90,5 @@ Next: run /spec to turn a resolved idea into issues.
 - Write only `CONTEXT.md`. Never modify code, branches, or other files.
 - On a refresh, preserve existing decisions unless I approve removing one.
 - Keep it terse. This is memory for agents, not a tutorial.
-- Record decisions as they are made — a reversed decision is an update here,
+- Record decisions as they are made - a reversed decision is an update here,
   not a deletion of history.

@@ -33,10 +33,10 @@ Each command is a single Markdown file in `commands/` with YAML frontmatter
 muster optimises for token economy. Keep command output and generated artifacts
 lean:
 
-- Compact, rendered markdown — verdict/headline first, details below. No ```
+- Compact, rendered markdown - verdict/headline first, details below. No ```
   ASCII boxes for summaries.
 - Text status markers only: `PASS`/`FAIL`, and `[x]` / `[!]` / `[ok]`. No emojis.
-- Expand and edit out of band — write artifacts (like the spec file) to disk for
+- Expand and edit out of band - write artifacts (like the spec file) to disk for
   the user to edit in their editor rather than reprinting them across turns.
 - Never dump sub-agent reports verbatim; synthesise to terse bullets.
 - End each command with a `**Next:**` line naming the command that follows.

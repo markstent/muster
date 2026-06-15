@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# install.sh — install Muster as plain slash commands (the non-plugin path).
+# install.sh - install Muster as plain slash commands (the non-plugin path).
 #
 # This clones Muster to ~/.muster and symlinks its commands into
 # ~/.claude/commands/, so they are available globally as bare commands

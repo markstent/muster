@@ -9,7 +9,7 @@ description: >
 
 # Spec
 
-Convert a resolved idea into one spec file, then — on your say-so — into a parent
+Convert a resolved idea into one spec file, then - on your say-so - into a parent
 spec issue and child task issues on GitHub. Work from the conversation; do not
 re-interview me. If something critical is genuinely missing, ask one targeted
 question, then continue.
@@ -18,21 +18,21 @@ The spec file is the source of truth. You write it once, I edit it in my editor,
 and only then do you create issues from it. Create nothing on GitHub until I reply
 `create`.
 
-## Step 1 — Read the codebase
+## Step 1 - Read the codebase
 
 - Read CONTEXT.md if it exists. Use its domain glossary vocabulary throughout.
   Respect any ADRs in the area you're touching.
 - Run `git log --oneline -10`.
 - Identify which files or modules this spec will likely touch.
 
-## Step 2 — Sketch the test seams
+## Step 2 - Sketch the test seams
 
 Sketch the seams at which the feature will be tested. Prefer existing seams to new
-ones. Use the highest seam possible — the broadest public interface that still
+ones. Use the highest seam possible - the broadest public interface that still
 isolates the behaviour. If new seams are needed, propose them at the highest point
 you can and check they match my expectations.
 
-## Step 3 — Write the spec file (create no issues yet)
+## Step 3 - Write the spec file (create no issues yet)
 
 Compose the spec and every task into ONE markdown file. Derive the path:
 
@@ -42,7 +42,7 @@ mkdir -p docs/specs
 # file = docs/specs/<date>-<slug>.md
 ```
 
-Write this structure to the file. Do NOT print its contents back into the chat —
+Write this structure to the file. Do NOT print its contents back into the chat -
 just write it.
 
 ```
@@ -70,7 +70,7 @@ just write it.
 
 ## Tasks
 
-### Task 1 — <verb> <specific thing>
+### Task 1 - <verb> <specific thing>
 **What:** <1-2 sentences. The behaviour this slice delivers.>
 **Why:** <which done-criterion from the spec this satisfies.>
 **Acceptance:**
@@ -79,31 +79,31 @@ just write it.
 - [ ] Full test suite passes
 **Scope:** touch only <files/modules>; do not touch <everything else>
 
-### Task 2 — <verb> <specific thing>
+### Task 2 - <verb> <specific thing>
 ...
 ```
 
 Content discipline:
-- Acceptance criteria must be concrete and independently testable — name files,
+- Acceptance criteria must be concrete and independently testable - name files,
   functions, or observable behaviours, not "works correctly".
 - Use the project's domain glossary vocabulary in every title and body.
 - Problem and Solution stay what-not-how.
 - Each task is a vertical slice (a tracer bullet cutting through every layer), not
   a horizontal "all the frontend" / "all the backend" split. No task may depend on
-  another in this batch finishing first — if one does, recut.
+  another in this batch finishing first - if one does, recut.
 
-## Step 4 — Review gate
+## Step 4 - Review gate
 
 Print only this, then wait:
 
 ```
-Spec written to docs/specs/<file> — <N> tasks.
+Spec written to docs/specs/<file> - <N> tasks.
 Review and edit it directly, then reply: `create` to generate the issues, or `cancel`.
 ```
 
 `cancel` → print "Nothing created." and stop. The file stays on disk for later.
 
-## Step 5 — Generate issues (only after `create`)
+## Step 5 - Generate issues (only after `create`)
 
 Re-read the file first so my edits are honoured. Then:
 
@@ -123,12 +123,12 @@ Re-read the file first so my edits are honoured. Then:
 
 Narrate tersely as you go: `Created spec #N`, `Created #N`.
 
-## Step 6 — Summarise
+## Step 6 - Summarise
 
 ```
 ## Spec created
 
-**Spec #N** — <title> · <N> tasks · `docs/specs/<file>` committed
+**Spec #N** - <title> · <N> tasks · `docs/specs/<file>` committed
 
 **Next:** run /triage
 ```
@@ -136,8 +136,8 @@ Narrate tersely as you go: `Created spec #N`, `Created #N`.
 ## Rules
 
 - Create nothing on GitHub until I reply `create`.
-- Re-read the spec file at create time — my edits are the source of truth.
+- Re-read the spec file at create time - my edits are the source of truth.
 - One combined file per spec. Vertical slices only; never a horizontal split.
-- Never create a task that depends on another task finishing — recut instead.
+- Never create a task that depends on another task finishing - recut instead.
 - Labels only: `spec`, `task`, `ready`. No assignees, milestones, or projects.
 - If `gh` is not authenticated: stop and print "Run: gh auth login".

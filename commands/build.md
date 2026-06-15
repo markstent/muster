@@ -22,14 +22,14 @@ correctly, prove it works, and get my sign-off before any PR opens.
 
 Stop and report if any fail.
 
-1. `git status` — must be clean. Zero staged, unstaged, or untracked files.
-2. `git branch --show-current` — must be on main (or base branch in CONTEXT.md).
-3. `gh auth status` — must be authenticated.
+1. `git status` - must be clean. Zero staged, unstaged, or untracked files.
+2. `git branch --show-current` - must be on main (or base branch in CONTEXT.md).
+3. `gh auth status` - must be authenticated.
 4. Read CONTEXT.md if it exists.
 
 ---
 
-## Step 1 — Fetch agent-ready tasks
+## Step 1 - Fetch agent-ready tasks
 
 ```bash
 gh issue list --label agent-ready --label ready --state open \
@@ -43,7 +43,7 @@ Print the queue before doing anything.
 
 ---
 
-## Step 2 — Execution plan
+## Step 2 - Execution plan
 
 Read each task's "Touch only" scope. Tasks touching different files run in
 parallel; tasks touching the same file run sequentially. Print the plan and
@@ -64,12 +64,12 @@ Wait for input.
 
 ---
 
-## Step 3 — Medium-risk pause
+## Step 3 - Medium-risk pause
 
 Before spawning a Worker for a `risk:medium` task, print:
 
 ```
-WARNING  #[N] is medium risk — [triage reason]
+WARNING  #[N] is medium risk - [triage reason]
          Proceeding in 10 seconds. Type 'hold [N]' to skip.
 ```
 
@@ -78,9 +78,9 @@ Low-risk tasks spawn immediately, no pause.
 
 ---
 
-## Step 4 — Spawn Worker sub-agents
+## Step 4 - Spawn Worker sub-agents
 
-Spawn each Worker (Task tool — concurrent for the parallel batch, one at a time
+Spawn each Worker (Task tool - concurrent for the parallel batch, one at a time
 for sequential) with this exact prompt:
 
 ```
@@ -124,7 +124,7 @@ you.
    minimum code -> passes. One test at a time. Only enough code for the
    current test. Don't anticipate future tests.
 
-4. Refactor — only once green. Extract duplication, simplify. Run the suite
+4. Refactor - only once green. Extract duplication, simplify. Run the suite
    after each refactor step. Never refactor while red.
 
 == Scope discipline ==
@@ -138,7 +138,7 @@ Branch:  task/[NUMBER]-[slug]
 Status:  PASS | FAIL | BLOCKED
 
 Files changed:
-- [path] — [what changed and why]
+- [path] - [what changed and why]
 
 Test output:
 [full test runner output verbatim]
@@ -157,9 +157,9 @@ Out of scope discovery:
 
 ---
 
-## Step 5 — Verify the Worker report
+## Step 5 - Verify the Worker report
 
-A single failure stops that task — do not run inner review on it.
+A single failure stops that task - do not run inner review on it.
 
 - [ ] Status is PASS
 - [ ] Test output present, all passing
@@ -167,15 +167,15 @@ A single failure stops that task — do not run inner review on it.
 - [ ] At least one commit on the branch
 - [ ] No out-of-scope discovery that was silently worked around
 
-On failure: label `blocked`, post "Build failed — [reason]", remove `ready`,
+On failure: label `blocked`, post "Build failed - [reason]", remove `ready`,
 print the failure, continue with remaining tasks.
 
 ---
 
-## Step 6 — Inner review (automatic — two axes, parallel)
+## Step 6 - Inner review (automatic - two axes, parallel)
 
 For every task that passes verification, run an automatic inner review before
-showing it to me. Spawn TWO sub-agents in parallel — Standards and Spec — so
+showing it to me. Spawn TWO sub-agents in parallel - Standards and Spec - so
 they don't pollute each other's context. A change can pass one axis and fail
 the other; keeping them separate stops one masking the other.
 
@@ -219,12 +219,12 @@ Inner-review verdict:
 
 ---
 
-## Step 7 — Approval summary
+## Step 7 - Approval summary
 
 After every task in the batch has been through verification + inner review:
 
 ```
-BATCH COMPLETE — AWAITING YOUR APPROVAL
+BATCH COMPLETE - AWAITING YOUR APPROVAL
 
 Ready for approval ([count]):
   [+] #[N]  risk:[risk]  [title]
@@ -252,7 +252,7 @@ Wait for input.
 
 ---
 
-## Step 8 — Handle approval input
+## Step 8 - Handle approval input
 
 `[N]` (number only): print `git diff main...task/[N]-[slug]` in full, re-show
 the approve/reject prompt for that issue. Wait.
@@ -275,7 +275,7 @@ Standards PASS · Spec PASS
   --label "in-review" --head "task/[N]-[slug]" --base main
 ```
 Add `in-review`, remove `ready` and `agent-ready`.
-Print: "PR opened for #[N]. You merge when ready — never auto-merged."
+Print: "PR opened for #[N]. You merge when ready - never auto-merged."
 
 `approve all`: run `approve [N]` for every ready task in order.
 
@@ -287,7 +287,7 @@ already applied, so nothing is lost.
 
 ---
 
-## Step 9 — Continue the loop
+## Step 9 - Continue the loop
 
 ```bash
 gh issue list --label agent-ready --label ready --state open \

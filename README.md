@@ -12,7 +12,7 @@ gate.
 
 *Muster* (verb): to assemble and prepare a force for action. The system musters
 your ideas into specs, your specs into tasks, and a fleet of sub-agents into
-reviewed, shippable code — and never moves without your say-so.
+reviewed, shippable code - and never moves without your say-so.
 
 ---
 
@@ -22,7 +22,7 @@ Muster is built on two ideas borrowed from disciplined engineering practice and
 wired into a two-tier agent loop:
 
 1. **Plan before you code.** Most agent failures aren't the model writing bad
-   code — they're requirements that were never fully specified. Muster forces a
+   code - they're requirements that were never fully specified. Muster forces a
    grilling session and a written spec before a single line is written.
 2. **Separate deciding from doing.** A read-only Manager agent decides what is
    safe to build; a Worker coordinator builds it, proves it with tests, reviews
@@ -37,7 +37,7 @@ Nothing is ever auto-merged. You are the merge gate, always.
 | Command | Phase | Role | What it does |
 |---|---|---|---|
 | `/think` | Plan | You + agent | Interrogates your idea until every decision branch is resolved |
-| `/context` | Plan | Agent | Builds and maintains `CONTEXT.md` — shared domain memory |
+| `/context` | Plan | Agent | Builds and maintains `CONTEXT.md` - shared domain memory |
 | `/spec` | Plan | Agent | Writes a spec issue + vertical-slice task issues on GitHub |
 | `/triage` | Manage | **Manager** | State machine: classifies, assesses risk, routes work |
 | `/build` | Execute | **Worker coordinator** | Spawns sub-agents, builds with TDD, auto-reviews, waits for you |
@@ -62,7 +62,7 @@ Nothing is ever auto-merged. You are the merge gate, always.
   ```
 - A git remote pointing at GitHub
 
-### Option A — plugin (recommended)
+### Option A - plugin (recommended)
 
 Inside Claude Code:
 
@@ -80,7 +80,7 @@ To update to a newer release later:
 /plugin update muster@muster
 ```
 
-### Option B — symlink (bare command names)
+### Option B - symlink (bare command names)
 
 Clone and symlink the commands into `~/.claude/commands/` so they are available
 globally as `/think`, `/spec`, etc.:
@@ -108,7 +108,7 @@ bash ~/.muster/setup-labels.sh
 ```
 
 (If you installed via the plugin, run `setup-labels.sh` from a clone of this
-repo — it only needs `gh` authenticated against the target repo.)
+repo - it only needs `gh` authenticated against the target repo.)
 
 ---
 
@@ -184,7 +184,7 @@ you merge     always manual, always yours
             +----------------+-----------------+
                              | approved diffs
                              v
-                     PR opened — you merge
+                     PR opened - you merge
 ```
 
 ---
@@ -206,7 +206,7 @@ you merge     always manual, always yours
 | `risk:low` / `risk:medium` / `risk:high` | /triage | Risk assessment |
 | `on-hold` | /build | Skipped by you during a medium-risk pause |
 | `in-review` | /build | PR is open, awaiting your merge |
-| `needs-work` | /build or /review | Rejected — needs changes |
+| `needs-work` | /build or /review | Rejected - needs changes |
 | `blocked` | /build | Sub-agent hit an unresolvable problem |
 
 Create them all in one go:
@@ -230,7 +230,7 @@ You:  /context        (first time in this repo)
 Muster: [writes CONTEXT.md with your stack and domain terms]
 
 You:  /spec
-Muster: [writes spec issue #12, then task issues #13, #14, #15 — each a
+Muster: [writes spec issue #12, then task issues #13, #14, #15 - each a
          vertical slice with a test seam and scope boundary]
 
 You:  /triage
@@ -243,7 +243,7 @@ Muster: [shows the execution plan: #13 and #14 can run in parallel, #15 waits]
 You:  yes
 Muster: [spawns Workers, each writes a failing test then code then refactors,
          runs a two-axis inner review, then:]
-        BATCH COMPLETE — AWAITING YOUR APPROVAL
+        BATCH COMPLETE - AWAITING YOUR APPROVAL
         [+] #13  risk:low  add token bucket  Standards PASS · Spec PASS
         [+] #14  risk:low  add limiter middleware  Standards PASS · Spec PASS
 You:  13            (inspect the diff)
@@ -273,7 +273,7 @@ so a routing mistake can't become a code mistake.
 never reaches the autonomous loop. Medium-risk work pauses for you. Low-risk
 work flows.
 
-**TDD in vertical slices.** Workers write one test, make it pass, then move on —
+**TDD in vertical slices.** Workers write one test, make it pass, then move on -
 never all tests up front, which produces tests of imagined rather than actual
 behaviour. Tests target behaviour through public interfaces, so they survive
 refactors.
@@ -319,7 +319,7 @@ CONTEXT.md
 ## Credit and lineage
 
 The planning and review philosophy draws on
-[Matt Pocock's skills for real engineers](https://github.com/mattpocock/skills) —
+[Matt Pocock's skills for real engineers](https://github.com/mattpocock/skills) -
 specifically the grilling approach (`/think`), the triage state machine and
 agent-ready routing (`/triage`), vertical-slice TDD (`/build`), two-axis review
 (`/review`), and the spec-as-source-of-truth idea (`/spec`). The two-tier
@@ -327,7 +327,7 @@ Manager/Worker orchestration, the risk-gated autonomous loop, the burnout caps,
 and the terminal approval gates are Muster's own.
 
 If you want the original, broader skill set (handoff, diagnose, prototype,
-zoom-out, and more), install Pocock's directly — Muster is a focused,
+zoom-out, and more), install Pocock's directly - Muster is a focused,
 opinionated subset wired for autonomous building.
 
 ---
