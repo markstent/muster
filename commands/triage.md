@@ -162,25 +162,23 @@ If I say "move #42 to agent-ready", trust me. Confirm what you're about to do
 
 ## After processing
 
-Print a compact, verdict-first summary (rendered markdown, no ASCII boxes):
+Print a compact, verdict-first summary in rendered markdown:
 
 ```
 ## Triage complete
 
-**Agent-ready (n)**
-- #N  risk:low - title
-
-**Needs human input (n)**
-- #N  risk:high - title - reason
-
-**Needs info (n)**
-- #N - title
+| State | # | Risk | Title | Note |
+|-------|---|------|-------|------|
+| ✅ Agent-ready | #N | low | title | - |
+| ⚠️ Needs human input | #N | high | title | reason |
+| ⚠️ Needs info | #N | - | title | what you owe it |
 
 n skipped (already triaged) · n left in queue
+
 **Next:** run /build
 ```
 
-Omit any bucket with zero issues.
+Omit any row whose state has zero issues.
 
 ## Rules
 

@@ -30,15 +30,24 @@ Each command is a single Markdown file in `commands/` with YAML frontmatter
 
 ## Output discipline
 
-muster optimises for token economy. Keep command output and generated artifacts
-lean:
+Muster optimises for token economy and a clean terminal. Every command shares
+one output style so the suite reads as one tool, not seven:
 
-- Compact, rendered markdown - verdict/headline first, details below. No ```
-  ASCII boxes for summaries.
-- Text status markers only: `PASS`/`FAIL`, and `[x]` / `[!]` / `[ok]`. No emojis.
+- **Rendered markdown, never code fences for layout.** Lead with a
+  `## <command> - <verdict or headline>` line, then the detail. Code fences are
+  only for literal copyable content: shell commands, diffs, branch names, paths.
+- **Tabular data goes in markdown tables** (2-4 columns). Put wider per-item
+  detail in short `###` blocks or bold lines, not extra columns, so nothing
+  wraps on a narrow terminal.
+- **One status-glyph set, used everywhere:**
+  - ✅ pass / ready / approved / safe to merge / done
+  - ❌ fail / blocker / blocked / do not merge
+  - ⚠️ warning / judgement call / medium risk / needs attention
+  - ⏭️ deferred / skipped / on hold
+- **Risk stays textual** (`low` / `medium` / `high`) in its own column or inline.
+- Never dump sub-agent reports verbatim; synthesise to terse bullets.
 - Expand and edit out of band - write artifacts (like the spec file) to disk for
   the user to edit in their editor rather than reprinting them across turns.
-- Never dump sub-agent reports verbatim; synthesise to terse bullets.
 - End each command with a `**Next:**` line naming the command that follows.
 
 ## Testing a change locally

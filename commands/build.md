@@ -63,23 +63,25 @@ the task up normally.
 ## Step 2 - Execution plan
 
 Read each task's "Touch only" scope. Tasks touching different files run in
-parallel; tasks touching the same file run sequentially. Print the plan and
-wait for my confirmation:
+parallel; tasks touching the same file run sequentially. Print the plan as
+rendered markdown and wait for my confirmation:
 
 ```
-Execution plan
-Parallel batch:
-  #[N]  risk:[low|med]  [title]  ->  touches: [files]
-Sequential (shared files):
-  #[N]  risk:[low|med]  [title]  ->  touches: [files]  (after #N)
-Deferred (open PR conflict):
-  #[N]  [title]  ->  merge PR #[P] first
+## Build - execution plan
 
-[X] of 3 tasks queued. [Y] agent-ready tasks remain.
-Type 'yes' to start, or name issue numbers to skip.
+| # | Risk | Title | Touches | Order |
+|---|------|-------|---------|-------|
+| [N] | low | [title] | [files] | parallel |
+| [N] | medium | [title] | [files] | after #[N] |
+| [N] | - | [title] | [files] | ⏭️ deferred - merge PR #[P] first |
+
+[X] of 3 tasks queued · [Y] agent-ready remain.
+
+**Next:** type `yes` to start, or name issue numbers to skip.
 ```
 
-Wait for input.
+Render the `⏭️ deferred` row only when an open-PR conflict was found. Wait for
+input.
 
 ---
 
@@ -87,10 +89,8 @@ Wait for input.
 
 Before spawning a Worker for a `risk:medium` task, print:
 
-```
-WARNING  #[N] is medium risk - [triage reason]
-         Proceeding in 10 seconds. Type 'hold [N]' to skip.
-```
+> ⚠️ **#[N] is medium risk** - [triage reason]
+> Proceeding in 10 seconds. Type `hold [N]` to skip.
 
 Wait 10 seconds for a `hold` response. If held: skip, label `on-hold`, continue.
 Low-risk tasks spawn immediately, no pause.
@@ -243,36 +243,32 @@ Inner-review verdict:
 After every task in the batch has been through verification + inner review:
 
 ```
-BATCH COMPLETE - AWAITING YOUR APPROVAL
+## Build - batch complete, awaiting your approval
 
-Ready for approval ([count]):
-  [+] #[N]  risk:[risk]  [title]
-      Branch:  task/[N]-[slug]
-      Changed: [files]
-      Tests:   [X passed, 0 failed]
-      Review:  Standards PASS · Spec PASS
-      Built:   [worker summary]
-      [type '[N]' for full diff]
+### ✅ Ready ([count])
 
-Not ready ([count]):
-  [x] #[N]  [title]
-      Reason: [verification failure | Standards FAIL | Spec FAIL]
-      Action: [label applied, comment posted]
+| # | Risk | Title | Tests | Review |
+|---|------|-------|-------|--------|
+| [N] | [risk] | [title] | [X passed, 0 failed] | ✅ Standards / ✅ Spec |
 
-Deferred ([count]):
-  [-] #[N]  [title]
-      Reason: open PR #[P] touches the same files - merge it first
-      Action: none (no label; re-run /build after PR #[P] merges)
+[N] `task/[N]-[slug]` - [worker summary]. Type `[N]` for the full diff.
 
-Commands:
-  [N]          show full diff for issue N
-  approve [N]  approve task, open PR
-  approve all  approve all ready tasks
-  reject [N]   send back (you'll be asked why)
-  stop         pause, print summary, exit
+### ❌ Not ready ([count])
+
+| # | Title | Reason | Action |
+|---|-------|--------|--------|
+| [N] | [title] | [verification failure / ❌ Standards / ❌ Spec] | [label applied, comment posted] |
+
+### ⏭️ Deferred ([count])
+
+| # | Title | Reason |
+|---|-------|--------|
+| [N] | [title] | open PR #[P] touches the same files - merge it first |
+
+**Commands:** `[N]` diff · `approve [N]` · `approve all` · `reject [N]` · `stop`
 ```
 
-Wait for input.
+Omit any section whose count is zero. Wait for input.
 
 ---
 
@@ -299,7 +295,7 @@ Standards PASS · Spec PASS
   --label "in-review" --head "task/[N]-[slug]" --base main
 ```
 Add `in-review`, remove `ready` and `agent-ready`.
-Print: "PR opened for #[N]. You merge when ready - never auto-merged."
+Print: "✅ PR opened for #[N]. You merge when ready - never auto-merged."
 
 `approve all`: run `approve [N]` for every ready task in order.
 
@@ -322,14 +318,17 @@ If tasks remain: print them, ask "Continue to next batch of 3? (yes / stop)".
 If none:
 
 ```
-BUILD COMPLETE
-Open PRs:          [titles + URLs]
-Blocked:           [list or "none"]
-Inner-review fail: [list or "none"]
-Sent back:         [list or "none"]
-Deferred:          [#N - merge PR #P first, or "none"]
+## Build complete
 
-Next:
+| Outcome | Issues |
+|---------|--------|
+| ✅ Open PRs | [titles + URLs] |
+| ❌ Blocked | [list or "none"] |
+| ❌ Inner-review fail | [list or "none"] |
+| ⚠️ Sent back | [list or "none"] |
+| ⏭️ Deferred | [#N - merge PR #P first, or "none"] |
+
+**Next:**
 - Merge open PRs on GitHub (always manual)
 - Run /review on any PR for a final two-axis check
 - Fix and re-label needs-work / blocked issues to rebuild

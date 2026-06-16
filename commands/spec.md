@@ -123,11 +123,14 @@ Print the slice breakdown so I can sanity-check the cut before any issue exists,
 then wait:
 
 ```
-Spec written to docs/specs/<file> - <N> tasks.
+## Spec - ready for review
 
-Proposed slices:
-  1. <title>   <AFK|HITL>   touches: <files>
-  2. <title>   <AFK|HITL>   touches: <files>
+Written to `docs/specs/<file>` - <N> tasks.
+
+| # | Title | Type | Touches |
+|---|-------|------|---------|
+| 1 | <title> | AFK | <files> |
+| 2 | <title> | HITL | <files> |
 
 Before I create the issues:
 - Is the granularity right (any slice too coarse or too fine)?
@@ -142,7 +145,7 @@ If any same-file slices survived the independence check, append this line before
 waiting:
 
 ```
-Heads-up: tasks <a> and <b> touch the same files, so they cannot build
+⚠️ Heads-up: tasks <a> and <b> touch the same files, so they cannot build
 autonomously in parallel - the later one will need the earlier PR merged first.
 Consider merging them into one task, or proceed knowing it needs manual sequencing.
 ```

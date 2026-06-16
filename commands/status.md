@@ -46,31 +46,43 @@ label sits in "awaiting triage". Within each bucket, oldest first.
 ## Step 4 - Print the snapshot
 
 ```
-MUSTER STATUS
+## Muster status
 
-Specs (open):
-  #[N]  [title]  -  [X tasks: Y done, Z open]
+**Specs (open)**
 
-Pipeline:
-  Awaiting triage    ([n])  #[N] [title]
-  Agent-ready        ([n])  #[N] risk:[risk] [title]
-  Needs human input  ([n])  #[N] [title]
-  Needs info         ([n])  #[N] [title]
-  In review          ([n])  #[N] [title]  (PR #[P])
-  Needs work         ([n])  #[N] [title]
-  On hold            ([n])  #[N] [title]
-  Blocked            ([n])  #[N] [title]
-  Done (7d)          ([n])  #[N] [title]
+| Spec | Title | Tasks |
+|------|-------|-------|
+| #[N] | [title] | [X tasks: Y done, Z open] |
 
-Open PRs:
-  PR #[P]  [title]  ([branch])  -  awaiting your merge
+### Pipeline
 
-Recent commits on [base]:
-  [git log --oneline -10]
+| State | Count | Issues |
+|-------|-------|--------|
+| Awaiting triage | [n] | #[N] [title] |
+| ✅ Agent-ready | [n] | #[N] (risk:[risk]) [title] |
+| ⚠️ Needs human input | [n] | #[N] [title] |
+| ⚠️ Needs info | [n] | #[N] [title] |
+| In review | [n] | #[N] [title] -> PR #[P] |
+| ⚠️ Needs work | [n] | #[N] [title] |
+| ⏭️ On hold | [n] | #[N] [title] |
+| ❌ Blocked | [n] | #[N] [title] |
+| ✅ Done (7d) | [n] | #[N] [title] |
 
-Next:
-  [Prioritised, concrete actions - see below.]
+### Open PRs
+
+| PR | Title | Branch |
+|----|-------|--------|
+| #[P] | [title] | [branch] - awaiting your merge |
+
+### Recent commits on [base]
+
+[git log --oneline -10, as a fenced code block]
+
+**Next:** [prioritised, concrete actions - see below.]
 ```
+
+Omit any pipeline row whose count is zero. Render the commit log inside a fenced
+code block (it is literal output); everything else is rendered markdown.
 
 ## Step 5 - Prioritise "Next"
 

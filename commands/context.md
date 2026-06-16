@@ -75,14 +75,16 @@ genuinely does not apply.
 Print what you wrote or changed:
 
 ```
-CONTEXT.md [created | updated]
+## Context - ✅ CONTEXT.md [created | updated]
 
-Stack:      [one line]
-Glossary:   [N terms]
-Decisions:  [N recorded]
-Changed:    [what this refresh added or revised, or "first run"]
+| | |
+|---|---|
+| Stack | [one line] |
+| Glossary | [N terms] |
+| Decisions | [N recorded] |
+| Changed | [what this refresh added or revised, or "first run"] |
 
-Next: run /spec to turn a resolved idea into issues.
+**Next:** run /spec to turn a resolved idea into issues.
 ```
 
 ## Rules

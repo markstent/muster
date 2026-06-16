@@ -331,9 +331,9 @@ the diff match the issue?), kept separate so one cannot mask the other. Either
 axis failing labels the task `needs-work` and it never reaches you; a
 security-relevant finding is always a fail.
 
-**Gate B - approval:** Once the batch is verified and reviewed, it prints
-`BATCH COMPLETE - AWAITING YOUR APPROVAL` listing what is ready (with
-`Standards PASS / Spec PASS`) and what is not, then waits. Your options:
+**Gate B - approval:** Once the batch is verified and reviewed, it prints a
+"batch complete" table of what is ready (with its Standards / Spec verdicts) and
+what is not, then waits. Your options:
 
 - `[N]` (a number) - print the full diff for that task, then re-ask.
 - `approve [N]` / `approve all` - open the PR(s), never merge.

@@ -64,10 +64,10 @@ unsanitised input, hardcoded secrets, unvalidated endpoints, language-specific
 risks (SQL injection, prototype pollution, path traversal).
 
 Return ONLY a terse bullet list, one finding per line, no prose:
-  - [x] file:line - issue (cite standard)        # hard violation / security
-  - [!] file:line - issue (cite standard)        # judgement call
+  - ❌ file:line - issue (cite standard)        # hard violation / security
+  - ⚠️ file:line - issue (cite standard)        # judgement call
 Then a final line: VERDICT: PASS  or  VERDICT: FAIL
-If there are no findings: "- [ok] no standards violations" then VERDICT: PASS.
+If there are no findings: "- ✅ no standards violations" then VERDICT: PASS.
 ```
 
 Spec sub-agent:
@@ -78,10 +78,10 @@ creep); (c) requirements that look implemented but wrong. Confirm tests exist
 for new behaviour and test through public interfaces, not implementation details.
 
 Return ONLY a terse bullet list, one finding per line, no prose:
-  - [x] issue - quote the spec line it relates to
-  - [!] issue - quote the spec line it relates to
+  - ❌ issue - quote the spec line it relates to
+  - ⚠️ issue - quote the spec line it relates to
 Then a final line: VERDICT: PASS  or  VERDICT: FAIL
-If everything is satisfied: "- [ok] all acceptance criteria met" then VERDICT: PASS.
+If everything is satisfied: "- ✅ all acceptance criteria met" then VERDICT: PASS.
 ```
 
 If the spec is missing, skip the Spec sub-agent and note it.
@@ -94,20 +94,20 @@ the sub-agent prose; use their bullets directly. Do not merge or rerank the axes
 ```
 ## Review - PR #N        (or the diff range)
 
-**Verdict: [SAFE TO MERGE | DO NOT MERGE]** · Standards: [PASS | FAIL] · Spec: [PASS | FAIL]
+**Verdict: [✅ SAFE TO MERGE | ❌ DO NOT MERGE]** · Standards: [✅ | ❌] · Spec: [✅ | ❌]
 
 **Standards ([n])**
-- [x] file:line - issue (security)
-- [!] file:line - issue
+- ❌ file:line - issue (security)
+- ⚠️ file:line - issue
 
 **Spec ([n])**
-- [ok] all acceptance criteria met
+- ✅ all acceptance criteria met
 
 **Worst:** [one line, or "none"]
-**Next:** fix and re-run /review, or merge on GitHub if SAFE TO MERGE
+**Next:** fix and re-run /review, or merge on GitHub if safe to merge
 ```
 
-Markers: `[x]` blocker/fail · `[!]` judgement call · `[ok]` pass. No emojis.
+Markers: ❌ blocker/fail · ⚠️ judgement call · ✅ pass.
 
 ## Rules
 
