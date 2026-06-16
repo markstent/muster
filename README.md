@@ -130,38 +130,41 @@ repo - it only needs `gh` authenticated against the target repo.)
 
 ```mermaid
 flowchart TD
-    idea([New idea])
+    idea([New idea]):::edge
 
-    subgraph plan ["PLAN: you and the agent"]
-        think["/think<br/>grill the idea until<br/>every branch resolves"]
-        context["/context<br/>write CONTEXT.md<br/>once per repo"]
-        spec["/spec<br/>spec file you edit,<br/>then spec + task issues"]
-    end
+    think["<b>/think</b><br/>grill the idea until every branch resolves"]:::plan
+    context["<b>/context</b><br/>write CONTEXT.md · once per repo"]:::plan
+    spec["<b>/spec</b><br/>spec file → spec + task issues"]:::plan
 
-    subgraph manage ["MANAGE: Manager agent (read-only on code)"]
-        triage["/triage<br/>classify, assess risk, route<br/>writes labels + comments only"]
-    end
+    triage["<b>/triage</b> · Manager, read-only on code<br/>classify · assess risk · route"]:::manage
+    risk{"risk:high or<br/>ambiguous?"}:::decision
+    human["<b>needs-human-input</b><br/>you implement or decide"]:::stop
 
-    subgraph execute ["EXECUTE: Worker coordinator"]
-        build["/build<br/>spawn Workers with TDD<br/>verify + auto inner review"]
-    end
+    build["<b>/build</b> · Worker coordinator<br/>spawn Workers (TDD) · verify · inner review"]:::execute
+    approve{"you approve<br/>the diff?"}:::decision
 
-    risk{"risk:high<br/>or ambiguous?"}
-    gate{"You approve<br/>the diff?"}
-    pr[["PR opened<br/>never auto-merged"]]
-    review["/review<br/>final two-axis check"]
-    merge([You merge on GitHub])
-    human["needs-human-input<br/>you implement or decide"]
+    pr[["PR opened · never auto-merged"]]:::ship
+    review["<b>/review</b><br/>final two-axis check"]:::ship
+    merge([You merge on GitHub]):::edge
 
-    idea --> think --> context --> spec --> triage
-    triage --> risk
-    risk -- yes --> human
-    risk -- no --> build
-    build --> gate
-    gate -- reject --> build
-    gate -- approve --> pr
-    pr --> review --> merge
+    idea --> think --> context --> spec --> triage --> risk
+    risk -->|yes| human
+    risk -->|no| build --> approve
+    approve -->|reject| build
+    approve -->|approve| pr --> review --> merge
+
+    classDef plan fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e;
+    classDef manage fill:#f3e8ff,stroke:#9333ea,color:#581c87;
+    classDef execute fill:#ffedd5,stroke:#ea580c,color:#7c2d12;
+    classDef decision fill:#fef9c3,stroke:#ca8a04,color:#713f12;
+    classDef ship fill:#dcfce7,stroke:#16a34a,color:#14532d;
+    classDef stop fill:#fee2e2,stroke:#dc2626,color:#7f1d1d;
+    classDef edge fill:#1e293b,stroke:#0f172a,color:#f8fafc;
 ```
+
+**Colour key:** blue = Plan (you + agent) · purple = Manage (Manager, read-only) ·
+orange = Execute (Worker coordinator) · yellow = your decision gates ·
+green = ship and merge · red = back to you.
 
 `/status` sits outside the line: run it any time to see where everything is and
 what to do next. The diagram shows the happy path; the granular tutorial below
