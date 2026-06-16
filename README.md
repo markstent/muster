@@ -73,13 +73,6 @@ Inside Claude Code:
 
 Commands appear as `/muster:think`, `/muster:spec`, and so on.
 
-To update to a newer release later:
-
-```
-/plugin marketplace update muster
-/plugin update muster@muster
-```
-
 ### Option B - symlink (bare command names)
 
 Clone and symlink the commands into `~/.claude/commands/` so they are available
@@ -97,7 +90,28 @@ mkdir -p ~/.claude/commands
 ln -sf ~/.muster/commands/*.md ~/.claude/commands/
 ```
 
-Update with `git -C ~/.muster pull`.
+### Updating
+
+**Plugin (Option A)** - inside Claude Code:
+
+```
+/plugin marketplace update muster
+/plugin update muster@muster
+```
+
+Then reload Claude Code (or restart) so the new command files take effect.
+Run `/plugin` to confirm muster shows the new version.
+
+**Symlink (Option B):**
+
+```bash
+git -C ~/.muster pull
+```
+
+The symlinks point at the files, so the new versions are live immediately.
+
+Each version's changes are on the
+[releases page](https://github.com/markstent/muster/releases).
 
 ### First-time repo setup (both options)
 
