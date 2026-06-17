@@ -71,6 +71,12 @@ Validate the plugin manifest before opening a PR:
 claude plugin validate .
 ```
 
+When exercising `/build`, note it re-runs the target repo's `Test command:`
+(from CONTEXT.md) against each branch and gates on its own run, not the Worker's
+pasted output - so the target repo must declare a runnable test command.
+Recommended belt-and-suspenders for repos muster builds in: also gate PRs in CI,
+so tests are enforced at merge independent of the agent.
+
 ## Pull requests
 
 - One command or one concern per PR.

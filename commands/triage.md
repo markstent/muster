@@ -51,6 +51,11 @@ autonomous agent may touch this, and how /build should behave.
 Routing rule:
 - `agent-ready` only if risk is low, OR risk is medium AND the issue is
   unambiguous with complete acceptance criteria.
+- Never `agent-ready` if CONTEXT.md has no runnable test command (`## Stack` ->
+  `Test command:`). /build verifies by re-running that command and cannot gate
+  the work without it. Route to `needs-human-input` and post: "No test command in
+  CONTEXT.md - run /context to add a `Test command:` line, then re-triage." You
+  stay read-only; only check the line exists, never run it.
 - `needs-human-input` if risk is high, the issue is vague, it contradicts
   CONTEXT.md or an ADR, or another open task/PR already touches the same files.
   When the blocker is specifically an open (unmerged) PR or branch touching the
@@ -124,7 +129,7 @@ What to build:
 [Specific behaviour, in domain language.]
 
 Where:
-[Files and the test seam to use.]
+[Files and the test point to use.]
 
 Acceptance:
 - [criterion]

@@ -41,7 +41,7 @@ Nothing is ever auto-merged. You are the merge gate, always.
 | `/spec` | Plan | Agent | Writes a spec issue + vertical-slice task issues on GitHub |
 | `/triage` | Manage | **Manager** | State machine: classifies, assesses risk, routes work |
 | `/build` | Execute | **Worker coordinator** | Spawns sub-agents, builds with TDD, auto-reviews, waits for you |
-| `/review` | Review | Agent | Two-axis review (Standards + Spec) before you merge |
+| `/review` | Review | Agent | Two-track review (Standards + Spec) before you merge |
 | `/status` | Any time | Agent | Snapshot of the whole pipeline and what to do next |
 
 > **Command names.** Installed as a plugin, the commands are namespaced:
@@ -144,7 +144,7 @@ flowchart TD
     approve{"you approve<br/>the diff?"}:::decision
 
     pr[["PR opened · never auto-merged"]]:::ship
-    review["<b>/review</b><br/>final two-axis check"]:::ship
+    review["<b>/review</b><br/>final two-track check"]:::ship
     merge([You merge on GitHub]):::edge
 
     idea --> think --> context --> spec --> triage --> risk
@@ -190,7 +190,7 @@ walks every gate, label change, and decision point one command at a time.
             |             /build               |
             |  spawns Worker sub-agents (TDD)  |
             |  verifies results                |
-            |  fires two-axis inner review     |
+            |  fires two-track inner review     |
             |  waits for your approval         |
             |  opens PRs (never merges)        |
             +----------------+-----------------+
@@ -260,9 +260,12 @@ confirm and it prints `Next: run /spec`.
 
 **What happens:** Muster reads your README, recent git log, package manifests,
 and any existing ADRs / CONTRIBUTING / CLAUDE.md, then writes a single file,
-`CONTEXT.md`, at the repo root: stack, a domain glossary, architecture,
-conventions, dated decisions, and out-of-scope notes. Every later command reads
-this file, so sub-agents speak your vocabulary and respect your prior choices.
+`CONTEXT.md`, at the repo root: stack (including a `Test command:` that runs the
+full suite), a domain glossary, architecture, conventions, dated decisions, and
+out-of-scope notes. Every later command reads this file, so sub-agents speak your
+vocabulary and respect your prior choices. The `Test command:` is required for the
+autonomous path: `/build` re-runs it to verify each task, and `/triage` won't mark
+work agent-ready without it.
 
 **The gate:** None, beyond a targeted question if something central is
 ambiguous. On later runs it refreshes in place and flags before removing any
@@ -274,9 +277,9 @@ is current.
 **You type:** `/spec`
 
 **What happens:** Working from the `/think` conversation (it does not
-re-interview), Muster sketches the test seams, then writes one markdown file,
+re-interview), Muster sketches the test points, then writes one markdown file,
 `docs/specs/<date>-<slug>.md`, containing the spec (Problem / Solution / a
-focused User stories list / Test seams / Done when / Out of scope / Touches) and
+focused User stories list / Test points / Done when / Out of scope / Touches) and
 every task as a vertical slice tagged `AFK` or `HITL` (a hint to triage), with
 concrete acceptance criteria and a scope boundary. It writes the file but does
 not print it back, and creates nothing on GitHub yet.
@@ -307,8 +310,9 @@ takes up to 10 open `task` issues, oldest first, reads each against `CONTEXT.md`
 and the code, reproduces bugs by reasoning through the path, and recommends a
 category (`bug` / `enhancement`), a risk (`risk:low` / `medium` / `high`), and a
 state. Risk gates autonomy: `agent-ready` only if risk is low, or medium with
-complete, unambiguous criteria. High risk, vagueness, or a clash with
-CONTEXT.md routes to `needs-human-input` instead. In our example the token
+complete, unambiguous criteria. High risk, vagueness, a clash with CONTEXT.md, or
+no `Test command:` in CONTEXT.md (which /build needs to verify the work) routes to
+`needs-human-input` instead. In our example the token
 bucket and middleware tasks come back `risk:low` and `agent-ready`; a session
 schema change is `risk:high`, so it goes to `needs-human-input`.
 
@@ -326,7 +330,9 @@ confirms before acting. Every comment it posts starts with
 **You type:** `/build`
 
 **What happens:** First it checks the tree is clean, you are on the base branch,
-and `gh` is authenticated. It fetches `agent-ready` + `ready` tasks, capped at 3
+`gh` is authenticated, and CONTEXT.md has a `Test command:` to verify against (it
+stops and points you to `/context` if not). It fetches `agent-ready` + `ready`
+tasks, capped at 3
 per run (the burnout cap), and prints an execution plan: tasks touching
 different files run in parallel, tasks sharing files run sequentially.
 
@@ -336,16 +342,17 @@ to skip it (skipped -> `on-hold`); low-risk tasks start immediately.
 
 It then spawns a Worker sub-agent per task. Each Worker branches
 (`task/[N]-[slug]`) and works in vertical-slice TDD: one failing test through
-the named seam, minimum code to pass, repeat - never all tests up front - then
+the named test point, minimum code to pass, repeat - never all tests up front - then
 refactors only on green, and touches only files in scope. The coordinator
-verifies each returned report (status PASS, tests present and passing, diff
-matches declared scope, at least one commit, no silent out-of-scope work). A
-failure labels the task `blocked` and is surfaced, not hidden.
+verifies each returned report (status PASS, diff matches declared scope, at least
+one commit, no silent out-of-scope work) and independently re-runs the test suite
+against the branch - its own run is the gate, and the Worker's pasted output must
+match it. A failure labels the task `blocked` and is surfaced, not hidden.
 
 Every task that passes verification then goes through an automatic inner review:
 two sub-agents in parallel, Standards (conventions + security) and Spec (does
 the diff match the issue?), kept separate so one cannot mask the other. Either
-axis failing labels the task `needs-work` and it never reaches you; a
+track failing labels the task `needs-work` and it never reaches you; a
 security-relevant finding is always a fail.
 
 **Gate B - approval:** Once the batch is verified and reviewed, it prints a
@@ -368,11 +375,11 @@ rejected -> `needs-work`; blocked -> `blocked`; held -> `on-hold`.
 
 **You type:** `/review 13` (or a SHA, branch, tag, or `main`)
 
-**What happens:** A read-only two-axis review of the diff against the fixed
+**What happens:** A read-only two-track review of the diff against the fixed
 point you supply. It finds the originating issue from the commit messages, then
 runs Standards and Spec sub-agents in parallel and reports one compact,
 verdict-first summary: `SAFE TO MERGE` or `DO NOT MERGE`. A security finding or
-a Spec fail is always `DO NOT MERGE`. It suggests nothing beyond the two axes
+a Spec fail is always `DO NOT MERGE`. It suggests nothing beyond the two tracks
 and never modifies code.
 
 **The gate:** Advisory. It tells you whether to merge; it does not merge.
@@ -410,9 +417,12 @@ work flows.
 **TDD in vertical slices.** Workers write one test, make it pass, then move on -
 never all tests up front, which produces tests of imagined rather than actual
 behaviour. Tests target behaviour through public interfaces, so they survive
-refactors.
+refactors. The coordinator does not take the Worker's word for it: it re-runs the
+suite itself against each branch and gates on its own result, so a fabricated or
+stale test report cannot pass. This needs a `Test command:` in CONTEXT.md, which
+/triage requires before a task is agent-ready.
 
-**Two-axis review.** Code is checked separately for conventions (Standards) and
+**Two-track review.** Code is checked separately for conventions (Standards) and
 for matching the issue (Spec). A change can pass one and fail the other; keeping
 them apart stops one masking the other.
 
@@ -455,7 +465,7 @@ CONTEXT.md
 The planning and review philosophy draws on
 [Matt Pocock's skills for real engineers](https://github.com/mattpocock/skills) -
 specifically the grilling approach (`/think`), the triage state machine and
-agent-ready routing (`/triage`), vertical-slice TDD (`/build`), two-axis review
+agent-ready routing (`/triage`), vertical-slice TDD (`/build`), two-track review
 (`/review`), and the spec-as-source-of-truth idea (`/spec`). The two-tier
 Manager/Worker orchestration, the risk-gated autonomous loop, the burnout caps,
 and the terminal approval gates are Muster's own.

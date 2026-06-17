@@ -26,6 +26,10 @@ Stop and report if any fail.
 2. `git branch --show-current` - must be on main (or base branch in CONTEXT.md).
 3. `gh auth status` - must be authenticated.
 4. Read CONTEXT.md if it exists.
+5. Resolve the test command from CONTEXT.md (`## Stack` -> `Test command:`). If
+   none can be resolved, stop: "Cannot verify tests - CONTEXT.md has no test
+   command. Run /context to add one." Step 5 re-runs this command to gate every
+   task, so the build cannot proceed without it.
 
 ---
 
@@ -134,7 +138,7 @@ you.
 == Steps ==
 1. Branch: git checkout -b task/[NUMBER]-[slug]
 
-2. Tracer bullet: write ONE test for the first behaviour through the seam
+2. Tracer bullet: write ONE test for the first behaviour through the test point
    named in the issue. Run it. Confirm it fails for the right reason (wrong
    behaviour, not an import or syntax error). Write the minimum code to pass.
    Run the suite. Green.
@@ -180,22 +184,32 @@ Out of scope discovery:
 
 A single failure stops that task - do not run inner review on it.
 
+Re-run the tests yourself - do not trust the Worker's pasted output. Check out
+the branch in an isolated tree (`git worktree add ../verify-[N] task/[N]-[slug]`,
+or stash and `git checkout` if no worktree), run the canonical test command from
+CONTEXT.md, capture its exit status and output, then remove the worktree (or
+restore the prior branch and stash). Your re-run is the authority for the test
+gate below; the Worker's pasted output is only cross-checked against it.
+
 - [ ] Status is PASS
-- [ ] Test output present, all passing
+- [ ] Coordinator re-ran the suite on `task/[N]-[slug]` - exit status clean, all
+      passing (this is the authority, not the Worker's pasted output)
+- [ ] Worker's pasted test output matches the re-run (no fabrication / no stale paste)
 - [ ] `git diff main...task/[N]-[slug] --name-only` matches declared scope only
 - [ ] At least one commit on the branch
 - [ ] No out-of-scope discovery that was silently worked around
 
-On failure: label `blocked`, post "Build failed - [reason]", remove `ready`,
-print the failure, continue with remaining tasks.
+On failure: label `blocked`, post "Build failed - [reason]" (use "tests fail on
+re-run" or "worker test output did not match re-run" for the test-gate cases),
+remove `ready`, print the failure, continue with remaining tasks.
 
 ---
 
-## Step 6 - Inner review (automatic - two axes, parallel)
+## Step 6 - Inner review (automatic - two tracks, parallel)
 
 For every task that passes verification, run an automatic inner review before
 showing it to me. Spawn TWO sub-agents in parallel - Standards and Spec - so
-they don't pollute each other's context. A change can pass one axis and fail
+they don't pollute each other's context. A change can pass one track and fail
 the other; keeping them separate stops one masking the other.
 
 Pin the diff once: `git diff main...task/[N]-[slug]` (three-dot, merge-base).
@@ -222,7 +236,7 @@ And the worker's test output:
 [TEST OUTPUT]
 Report: (a) acceptance criteria missing or partial; (b) behaviour not asked
 for (scope creep); (c) criteria that look implemented but wrong. Confirm tests
-exist for new behaviour and test through the seam, not implementation details.
+exist for new behaviour and test through the test point, not implementation details.
 Quote the issue line for each finding. Under 400 words. End with a verdict
 line: SPEC PASS or SPEC FAIL.
 ```
@@ -234,7 +248,7 @@ Inner-review verdict:
 - Either FAIL -> label `needs-work`, post both reports as a comment, remove
   `ready`, mark inner-review-failed in the summary. Do not present for approval.
 - A standards finding that is security-relevant (secret, injection,
-  unvalidated endpoint) is always a FAIL regardless of the spec axis.
+  unvalidated endpoint) is always a FAIL regardless of the spec track.
 
 ---
 
@@ -330,7 +344,7 @@ If none:
 
 **Next:**
 - Merge open PRs on GitHub (always manual)
-- Run /review on any PR for a final two-axis check
+- Run /review on any PR for a final two-track check
 - Fix and re-label needs-work / blocked issues to rebuild
 - Run /triage if new tasks were added
 ```

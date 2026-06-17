@@ -25,12 +25,12 @@ and only then do you create issues from it. Create nothing on GitHub until I rep
 - Run `git log --oneline -10`.
 - Identify which files or modules this spec will likely touch.
 
-## Step 2 - Sketch the test seams
+## Step 2 - Sketch the test points
 
-Sketch the seams at which the feature will be tested. Prefer existing seams to new
-ones. Use the highest seam possible - the broadest public interface that still
-isolates the behaviour. If new seams are needed, propose them at the highest point
-you can and check they match my expectations.
+Sketch the points at which the feature will be tested. Prefer existing test points
+to new ones. Use the broadest public interface that still isolates the behaviour.
+If new test points are needed, propose them at the highest level you can and check
+they match my expectations.
 
 ## Step 3 - Write the spec file (create no issues yet)
 
@@ -57,12 +57,12 @@ just write it.
 ## User stories
 <a focused numbered list - "As an <actor>, I want <feature>, so that <benefit>".
  Cover the feature's real paths, not every edge; keep it tight. These are what
- the inner-review Spec axis and /triage check the work against.>
+ the inner-review Spec track and /triage check the work against.>
 1. As a <actor>, I want <feature>, so that <benefit>.
 
-## Test seams
-<where this will be tested, and why those seams. Name prior art - similar tests
- already in the codebase - so the Worker follows an existing pattern.>
+## Test points
+<where this will be tested, and why those test points. Name prior art - similar
+ tests already in the codebase - so the Worker follows an existing pattern.>
 
 ## Done when
 - [ ] <concrete, independently verifiable criterion>
@@ -85,7 +85,7 @@ needs a human decision or review. A hint only; /triage makes the binding call.>
 **Covers:** <which user-story numbers this slice satisfies.>
 **Acceptance:**
 - [ ] <specific and testable. Name files, functions, or behaviours.>
-- [ ] Tests written for all new behaviour, through the seam above
+- [ ] Tests written for all new behaviour, through the test point above
 - [ ] Full test suite passes
 **Scope:** touch only <files/modules>; do not touch <everything else>
 
@@ -157,7 +157,7 @@ Consider merging them into one task, or proceed knowing it needs manual sequenci
 Re-read the file first so my edits are honoured. Then:
 
 1. Create the spec issue with `gh issue create`, label `spec`. Body = the spec
-   section (Problem / Solution / User stories / Test seams / Done when / Out of
+   section (Problem / Solution / User stories / Test points / Done when / Out of
    scope / Touches), ending with a line: `Spec file: docs/specs/<file>`. Save the
    number as `$SPEC_NUMBER`.
 2. For each `### Task` in the file, create an issue with labels `task` and `ready`.

@@ -1,7 +1,7 @@
 ---
 name: review
 description: >
-  Review the changes since a fixed point along two axes - Standards (does the
+  Review the changes since a fixed point along two tracks - Standards (does the
   code follow this repo's documented conventions?) and Spec (does it implement
   what the issue asked for?). Runs both as parallel sub-agents and reports one
   compact verdict. Use before merging any PR, or to "review since X".
@@ -9,15 +9,15 @@ description: >
 
 # Review
 
-Two-axis review of the diff between `HEAD` and a fixed point you supply:
+Two-track review of the diff between `HEAD` and a fixed point you supply:
 
 - Standards - does the code conform to this repo's documented conventions?
 - Spec - does the code faithfully implement the originating issue or spec?
 
-Both axes run as parallel sub-agents so they don't pollute each other's
+Both tracks run as parallel sub-agents so they don't pollute each other's
 context. Then this skill reports them side by side. A change can pass one and
 fail the other - correct code implementing the wrong thing, or the right
-behaviour built against the project's conventions - so the axes stay separate.
+behaviour built against the project's conventions - so the tracks stay separate.
 
 ## Step 1 - Pin the fixed point
 
@@ -89,7 +89,7 @@ If the spec is missing, skip the Spec sub-agent and note it.
 ## Step 5 - Aggregate
 
 Combine the two bullet lists into one compact, verdict-first report. Do not paste
-the sub-agent prose; use their bullets directly. Do not merge or rerank the axes.
+the sub-agent prose; use their bullets directly. Do not merge or rerank the tracks.
 
 ```
 ## Review - PR #N        (or the diff range)
@@ -111,8 +111,8 @@ Markers: ❌ blocker/fail · ⚠️ judgement call · ✅ pass.
 
 ## Rules
 
-- A security finding on the Standards axis is always DO NOT MERGE.
+- A security finding on the Standards track is always DO NOT MERGE.
 - A Spec FAIL (missing requirement or wrong implementation) is DO NOT MERGE.
-- Don't suggest improvements beyond the two axes - the issue had defined
+- Don't suggest improvements beyond the two tracks - the issue had defined
   acceptance criteria; anything more is scope creep.
 - This is a read-only review. Never modify code or merge.

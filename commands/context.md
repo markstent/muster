@@ -46,7 +46,10 @@ genuinely does not apply.
 
 ## Stack
 [Languages, frameworks, key libraries, test runner, package manager.
- One line each. How to run the tests.]
+ One line each.]
+Test command: [single command that runs the full suite, e.g. `pytest -q`.
+ /build re-runs exactly this to gate every task; /triage requires it before a
+ task is agent-ready. Keep it one runnable line.]
 
 ## Domain glossary
 [The nouns and verbs of this project, defined. The vocabulary every spec,
