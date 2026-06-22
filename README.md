@@ -101,8 +101,9 @@ Nothing is ever auto-merged. You are the merge gate, always.
   ```
 - A git remote pointing at GitHub
 
-> The plugin install (Option A) is Claude Code-specific. For every other harness,
-> use the skills tree directly - see [Other harnesses](#other-harnesses).
+> The plugin (Option A) is Claude Code-only. For everything else - including
+> Claude Code if you prefer bare `/think` names - use the script in Option B,
+> which installs into every harness it finds.
 
 ### Option A - plugin (recommended)
 
@@ -115,41 +116,43 @@ Inside Claude Code:
 
 Commands appear as `/muster:think`, `/muster:spec`, and so on.
 
-### Option B - symlink (bare command names, Claude Code)
+### Option B - script (any harness, bare command names)
 
-Clone and symlink the skills into `~/.claude/skills/` so they are available
-globally as `/think`, `/spec`, etc.:
+One command clones Muster to `~/.muster` and symlinks the skills into **every
+harness it finds** - Claude Code, Mistral (Vibe), Codex, Gemini, Cursor - so
+they're available as `/think`, `/spec`, etc.:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/markstent/muster/main/install.sh | bash
 ```
 
-Or manually:
+Because they're symlinks to that one clone, a later `git -C ~/.muster pull`
+updates every harness at once - nothing to re-copy.
+
+Want to target specific harnesses, or copy the files instead of symlinking?
 
 ```bash
-git clone https://github.com/markstent/muster.git ~/.muster
-mkdir -p ~/.claude/skills
-for d in ~/.muster/skills/*/; do ln -sfn "$d" ~/.claude/skills/"$(basename "$d")"; done
+bash install.sh claude vibe      # only these (creates their skills dir if needed)
+MUSTER_COPY=1 bash install.sh    # copy the files instead of symlinking
 ```
 
 ### Other harnesses
 
 Muster's seven commands are plain [Agent Skills](https://agentskills.io):
-`skills/<name>/SKILL.md`, each with `name` + `description` frontmatter. Any
-harness that reads the spec - **Cursor, Codex, Gemini CLI, Mistral, pi**, and
-the rest - picks them up. Copy or symlink the `skills/` tree into that tool's
-skills directory:
+`skills/<name>/SKILL.md`, each with `name` + `description` frontmatter. The
+script in Option B already installs into the common ones (Claude Code, Mistral,
+Codex, Gemini, Cursor). For any harness it doesn't know, point that tool's
+skills directory at the clone yourself - copy or symlink the `skills/` tree in:
 
 ```bash
 git clone https://github.com/markstent/muster.git ~/.muster
-
-# Consult your harness's docs for its skills directory, then copy the tree in.
-# A few examples (verify the exact path in each tool's docs):
-#   Cursor / Codex / Gemini CLI / OpenCode   per-tool skills dir
-#   Mistral (Vibe)   ~/.vibe/skills/   (user)   or   ./.vibe/skills/   (project)
-#   pi               per-tool skills dir
 cp -R ~/.muster/skills/* <that-harness's-skills-dir>/
 ```
+
+Each tool decides where it reads skills from (the Agent Skills spec standardises
+the file format, not the location), so check your harness's docs for the path -
+e.g. Mistral (Vibe) reads `~/.vibe/skills/`, just as Claude Code reads
+`~/.claude/skills/` and Codex reads `~/.codex/skills/`.
 
 The skill bodies are identical across harnesses and tool-neutral - they describe
 what the agent should do, not one tool's API. Cross-references between commands
@@ -175,15 +178,16 @@ ignore the unknown field.
 Then reload Claude Code (or restart) so the new command files take effect.
 Run `/plugin` to confirm muster shows the new version.
 
-**Symlink (Option B):**
+**Script (Option B):**
 
 ```bash
 git -C ~/.muster pull
 ```
 
-The symlinks point at the skill directories, so the new versions are live
-immediately. (On other harnesses that you installed by copying the tree, re-copy
-after pulling.)
+The symlinks point at the skill directories in the clone, so the new versions
+are live across every harness immediately. (If you installed with
+`MUSTER_COPY=1`, or copied the tree manually, re-run the installer after pulling
+to refresh the copies.)
 
 Each version's changes are on the
 [releases page](https://github.com/markstent/muster/releases).
