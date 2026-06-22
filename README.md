@@ -16,7 +16,7 @@ the Agent Skills spec.
 **Runs in:**
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-8A2BE2)](https://claude.com/claude-code)
 [![Cursor](https://img.shields.io/badge/Cursor-8A2BE2)](https://cursor.com)
-[![Codex](https://img.shields.io/badge/Codex-8A2BE2)](https://openai.com/codex)
+[![Codex](https://img.shields.io/badge/Codex-8A2BE2)](https://developers.openai.com/codex)
 [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-8A2BE2)](https://github.com/google-gemini/gemini-cli)
 [![Mistral](https://img.shields.io/badge/Mistral-8A2BE2)](https://mistral.ai)
 [![pi](https://img.shields.io/badge/pi-8A2BE2)](https://pi.dev)
@@ -90,7 +90,7 @@ Nothing is ever auto-merged. You are the merge gate, always.
   Muster is harness-agnostic - it works in
   [Claude Code](https://claude.com/claude-code),
   [Cursor](https://cursor.com),
-  [Codex](https://openai.com/codex),
+  [Codex](https://developers.openai.com/codex),
   [Gemini CLI](https://github.com/google-gemini/gemini-cli),
   [Mistral](https://mistral.ai),
   [pi](https://pi.dev), and others. Any harness with a shell/bash tool
