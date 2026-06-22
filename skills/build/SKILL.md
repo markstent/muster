@@ -2,19 +2,20 @@
 name: build
 disable-model-invocation: true
 description: >
-  Worker Coordinator. Picks up agent-ready tasks (max 3 per run), groups them
-  by independence, spawns parallel Worker sub-agents that build with TDD,
-  runs an automatic inner review on every diff, presents a full summary, and
-  waits for your terminal approval before opening any PR. Never auto-merges.
-  Run after /triage has labelled tasks agent-ready.
+  Builds the tasks triage marked ready - up to 3 at a time. Writes them
+  test-first, double-checks each one against your conventions and against what
+  the issue asked for, shows you everything, and waits for your OK before
+  opening any PR. Never merges on its own. Run after /triage.
 ---
 
 # Build
 
-You are the Worker Coordinator. You do not write code. You manage the loop:
-fetch -> plan -> spawn -> verify -> inner review -> summarise -> wait -> PR.
+You coordinate the builders - you don't write code yourself. You run the loop:
+pick up the ready tasks, plan them, hand each to a builder, check the result,
+give it a quick automatic review, show me what's ready, and wait for my OK
+before opening any PR.
 
-Triage has already decided what is safe to build. Your job is to build it
+Triage has already decided what's safe to build. Your job is to build it
 correctly, prove it works, and get my sign-off before any PR opens.
 
 ---
@@ -72,20 +73,23 @@ parallel; tasks touching the same file run sequentially. Print the plan as
 rendered markdown and wait for my confirmation:
 
 ```
-## Build - execution plan
+## Build - here's the plan
 
-| # | Risk | Title | Touches | Order |
-|---|------|-------|---------|-------|
-| [N] | low | [title] | [files] | parallel |
-| [N] | medium | [title] | [files] | after #[N] |
-| [N] | - | [title] | [files] | ⏭️ deferred - merge PR #[P] first |
+I'm about to build [X] task(s). Ones that don't share files run together; the
+rest wait their turn.
 
-[X] of 3 tasks queued · [Y] agent-ready remain.
+| # | Title | Files | When |
+|---|-------|-------|------|
+| [N] | [title] | [files] | now (low risk) |
+| [N] | [title] | [files] | after #[N] (medium risk) |
+| [N] | [title] | [files] | ⏭️ waiting - merge PR #[P] first |
 
-**Next:** type `yes` to start, or name issue numbers to skip.
+[X] of 3 queued · [Y] more ready for later.
+
+**Your move:** type `yes` to start, or list any numbers you'd rather skip.
 ```
 
-Render the `⏭️ deferred` row only when an open-PR conflict was found. Wait for
+Render the `⏭️ waiting` row only when an open-PR conflict was found. Wait for
 input.
 
 ---
@@ -94,8 +98,8 @@ input.
 
 Before spawning a Worker for a `risk:medium` task, print:
 
-> ⚠️ **#[N] is medium risk** - [triage reason]
-> Proceeding in 10 seconds. Type `hold [N]` to skip.
+> ⚠️ **#[N] is a bigger change** (medium risk) - [triage reason]
+> I'll start it in 10 seconds. Type `hold [N]` if you'd rather I skip it for now.
 
 Wait 10 seconds for a `hold` response. If held: skip, label `on-hold`, continue.
 Low-risk tasks spawn immediately, no pause.
@@ -258,29 +262,35 @@ Inner-review verdict:
 After every task in the batch has been through verification + inner review:
 
 ```
-## Build - batch complete, awaiting your approval
+## Build - done, and waiting for you
+
+[N] task(s) are built and checked. Here's what's ready for you to look at.
 
 ### ✅ Ready ([count])
 
-| # | Risk | Title | Tests | Review |
+| # | Risk | Title | Tests | Checks |
 |---|------|-------|-------|--------|
-| [N] | [risk] | [title] | [X passed, 0 failed] | ✅ Standards / ✅ Spec |
+| [N] | [risk] | [title] | [X passed, 0 failed] | ✅ conventions / ✅ matches the issue |
 
-[N] `task/[N]-[slug]` - [worker summary]. Type `[N]` for the full diff.
+[N] `task/[N]-[slug]` - [worker summary]. Type `[N]` to see the full diff.
 
 ### ❌ Not ready ([count])
 
-| # | Title | Reason | Action |
-|---|-------|--------|--------|
-| [N] | [title] | [verification failure / ❌ Standards / ❌ Spec] | [label applied, comment posted] |
+| # | Title | What happened | What I did |
+|---|-------|---------------|------------|
+| [N] | [title] | [tests failed / ❌ conventions / ❌ doesn't match the issue] | [label applied, comment posted] |
 
-### ⏭️ Deferred ([count])
+### ⏭️ Waiting ([count])
 
-| # | Title | Reason |
-|---|-------|--------|
-| [N] | [title] | open PR #[P] touches the same files - merge it first |
+| # | Title | Why |
+|---|-------|-----|
+| [N] | [title] | open PR #[P] changes the same files - merge it first |
 
-**Commands:** `[N]` diff · `approve [N]` · `approve all` · `reject [N]` · `stop`
+**Your move:**
+- `[N]` - show me the full diff for task N
+- `approve [N]` / `approve all` - open the PR(s) (I never merge)
+- `reject [N]` - send it back; I'll ask what needs to change
+- `stop` - pause here; nothing is lost
 ```
 
 Omit any section whose count is zero. Wait for input.
@@ -302,8 +312,8 @@ Part of spec #[SPEC_NUMBER]
 ## What changed
 [worker summary]
 
-## Inner review
-Standards PASS · Spec PASS
+## Checks
+Conventions: passed · Matches the issue: passed
 
 ## Test output
 [full test output]" \
@@ -339,15 +349,15 @@ If none:
 |---------|--------|
 | ✅ Open PRs | [titles + URLs] |
 | ❌ Blocked | [list or "none"] |
-| ❌ Inner-review fail | [list or "none"] |
+| ❌ Didn't pass review | [list or "none"] |
 | ⚠️ Sent back | [list or "none"] |
-| ⏭️ Deferred | [#N - merge PR #P first, or "none"] |
+| ⏭️ Waiting | [#N - merge PR #P first, or "none"] |
 
 **Next:**
-- Merge open PRs on GitHub (always manual)
-- Run /review on any PR for a final two-track check
-- Fix and re-label needs-work / blocked issues to rebuild
-- Run /triage if new tasks were added
+- Merge the open PRs on GitHub (always your call)
+- Run /review on any PR for one more check before merging
+- Fix and re-label needs-work / blocked issues, then build again
+- Run /triage if new tasks came in
 ```
 
 ---
@@ -360,4 +370,4 @@ If none:
 - Never start a new batch without my explicit "yes".
 - Never open a PR that failed inner review.
 - Never continue past a verification failure without surfacing it.
-- Maximum 3 tasks per run (burnout cap). Maximum 3 concurrent Workers.
+- Maximum 3 tasks per run, and at most 3 builders at once, so nothing runs away.

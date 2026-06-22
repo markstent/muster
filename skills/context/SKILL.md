@@ -2,17 +2,19 @@
 name: context
 disable-model-invocation: true
 description: >
-  Build and maintain CONTEXT.md - the shared domain memory every other Muster
-  command reads. Run once per repo, then refresh when major concepts change or
-  a prior decision is reversed. Reads the repo; writes only CONTEXT.md.
+  Write CONTEXT.md - the shared notes every other Muster command reads (your
+  stack, your terms, your past decisions). Run once per repo, then refresh when
+  something major changes or a past decision is reversed. Reads the repo; writes
+  only CONTEXT.md.
 ---
 
 # Context
 
-Write and maintain `CONTEXT.md` at the repo root. This file is the shared brain:
-`/spec`, `/triage`, and `/build` all read it so sub-agents speak your domain
-language and respect your prior decisions. It is agent working memory, not
-human-facing documentation - keep it dense and current, not pretty.
+Write and maintain `CONTEXT.md` at the repo root. It's the shared notes every
+other Muster command reads - `/spec`, `/triage`, and `/build` - so the agents
+speak your project's language and respect decisions you've already made. It's
+working memory for the agents, not a doc for people: keep it dense and current,
+not pretty.
 
 You read the codebase. You write exactly one file: `CONTEXT.md`. Touch nothing
 else.
@@ -80,6 +82,8 @@ Print what you wrote or changed:
 
 ```
 ## Context - ✅ CONTEXT.md [created | updated]
+
+Saved your project notes - the shared memory every Muster command now reads.
 
 | | |
 |---|---|

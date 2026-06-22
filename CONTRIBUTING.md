@@ -34,9 +34,21 @@ Codex, Gemini CLI, and any other reader of the Agent Skills spec.
 
 ## Output discipline
 
-Muster optimises for token economy and a clean terminal. Every command shares
-one output style so the suite reads as one tool, not seven:
+Muster optimises for token economy and a clean terminal, and it must read
+plainly for users of any technical level. Every command shares one output style
+so the suite reads as one tool, not seven:
 
+- **Plain first, precise underneath.** Lead every gate and verdict with one
+  plain sentence saying what just happened, and end it with a clear
+  call-to-action: a bold `**Your move:**` line for interactive gates, or a
+  `**Next:**` line otherwise. Someone non-technical should be able to act on the
+  lead; the tables and detail below are for those who want them.
+- **Translate on the way out.** Keep Muster's internal vocabulary in the
+  instructions, never in what you print. Do not surface "two-track", "vertical
+  slice / tracer bullet", "burnout cap", "state machine", "inner review", or
+  "worktree" to the user. Gloss every label and risk where it is shown (e.g.
+  "Agent-ready - ready for me to build on my own"). Keep the muster theme and
+  the Manager/builder roles, but introduce them in plain words.
 - **Rendered markdown, never code fences for layout.** Lead with a
   `## <command> - <verdict or headline>` line, then the detail. Code fences are
   only for literal copyable content: shell commands, diffs, branch names, paths.

@@ -2,10 +2,10 @@
 name: spec
 disable-model-invocation: true
 description: >
-  Turn the resolved idea into a spec. Drafts the spec and all task slices into a
-  single markdown file under docs/specs/, lets you edit it, then generates the
-  GitHub issues from the file on your confirmation. Run after /think, or directly
-  when the idea is already concrete. Does not re-interview.
+  Turn the agreed idea into a written spec and a set of small, buildable tasks -
+  saved as one file you can edit - then create the GitHub issues once you say go.
+  Run after /think, or straight away if the idea is already clear. Won't
+  re-interview you.
 ---
 
 # Spec
@@ -58,7 +58,7 @@ just write it.
 ## User stories
 <a focused numbered list - "As an <actor>, I want <feature>, so that <benefit>".
  Cover the feature's real paths, not every edge; keep it tight. These are what
- the inner-review Spec track and /triage check the work against.>
+ the automatic review and /triage check the work against.>
 1. As a <actor>, I want <feature>, so that <benefit>.
 
 ## Test points
@@ -124,31 +124,34 @@ Print the slice breakdown so I can sanity-check the cut before any issue exists,
 then wait:
 
 ```
-## Spec - ready for review
+## Spec - ready for your review
 
-Written to `docs/specs/<file>` - <N> tasks.
+Here's how I'd split the work into tasks. Take a look before I create anything
+on GitHub - it's all written to `docs/specs/<file>` (<N> tasks).
 
-| # | Title | Type | Touches |
-|---|-------|------|---------|
-| 1 | <title> | AFK | <files> |
-| 2 | <title> | HITL | <files> |
+| # | Title | Who | Files |
+|---|-------|-----|-------|
+| 1 | <title> | auto | <files> |
+| 2 | <title> | needs you | <files> |
 
-Before I create the issues:
-- Is the granularity right (any slice too coarse or too fine)?
-- Should any slices merge or split?
-- Are the AFK/HITL tags correct?
+("auto" = I can build and merge it on my own · "needs you" = needs a human
+decision or review. /triage makes the final call.)
 
-Edit the file directly to adjust, then reply: `create` to generate the issues,
-or `cancel`.
+A few things worth checking:
+- Are the tasks the right size - any too big, any too small?
+- Should any be combined, or split apart?
+- Is the "Who" right on each one?
+
+Edit the file directly to adjust, then reply `create` to make the issues, or
+`cancel` to stop (your edits to the file are kept).
 ```
 
-If any same-file slices survived the independence check, append this line before
-waiting:
+If any tasks change the same files, append this line before waiting:
 
 ```
-⚠️ Heads-up: tasks <a> and <b> touch the same files, so they cannot build
-autonomously in parallel - the later one will need the earlier PR merged first.
-Consider merging them into one task, or proceed knowing it needs manual sequencing.
+⚠️ Heads-up: tasks <a> and <b> change the same files, so they can't be built at
+the same time - the second one has to wait for the first to be merged. Consider
+combining them into one task, or carry on knowing you'll merge them in order.
 ```
 
 `cancel` → print "Nothing created." and stop. The file stays on disk for later.
@@ -177,6 +180,8 @@ Narrate tersely as you go: `Created spec #N`, `Created #N`.
 
 ```
 ## Spec created
+
+Done - the spec and its tasks are now issues on GitHub.
 
 **Spec #N** - <title> · <N> tasks · `docs/specs/<file>` committed
 

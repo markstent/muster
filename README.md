@@ -28,6 +28,25 @@ reviewed, shippable code - and never moves without your say-so.
 
 ---
 
+## In plain words
+
+Muster turns a rough idea into shipped code through seven small commands you run
+in order. You stay in charge the whole way - it never changes anything important
+without asking, and it never merges anything itself.
+
+1. **`/think`** - it asks you questions until the idea is clear.
+2. **`/context`** - it writes down how your project works (once per repo).
+3. **`/spec`** - it turns the idea into a short plan and a list of small tasks.
+4. **`/triage`** - it sorts the tasks and flags which are safe to build on their own.
+5. **`/build`** - it builds the safe ones, tests them, checks them, and shows you the result.
+6. **`/review`** - one more check before you merge.
+7. **You merge.** Always your call.
+
+Lost track? Run **`/status`** any time for a plain summary and what to do next.
+New to the terms? See the [Glossary](#glossary).
+
+---
+
 ## What it does
 
 Muster is built on two ideas borrowed from disciplined engineering practice and
@@ -487,6 +506,26 @@ your domain language and respect your prior decisions.
 
 **Three caps stop runaway loops.** Triage handles at most 10 issues per run;
 build handles at most 3 tasks per run with at most 3 concurrent Workers.
+
+---
+
+## Glossary
+
+Plain meanings for the words Muster uses, in its output and in this README:
+
+| Term | What it means |
+|------|---------------|
+| **Spec** | A short written plan for one feature: the problem, the solution, and how you'll know it's done. |
+| **Task** | One small, self-contained piece of a spec that can be built and merged on its own. |
+| **Agent-ready** | A task that's clear and safe enough for Muster to build on its own. |
+| **Needs you** | A task that needs a human decision, or is too risky to automate. |
+| **Risk: low / medium / high** | How much a change could break things. Low = contained to one area; high = touches schemas, auth, payments, or public APIs. |
+| **The Manager** (`/triage`) | The part that reads your code and decides what's safe to build. It never changes code. |
+| **The builders** (`/build`) | The parts that actually write the code, one test at a time. |
+| **Conventions check** | Does the new code follow your project's documented style and rules? |
+| **Matches the issue** | Does the new code do what the task asked for - no more, no less? |
+| **PR (pull request)** | A proposed change on GitHub that you review and merge. Muster opens these; it never merges them. |
+| **`CONTEXT.md`** | The shared notes (`/context` writes it) that every command reads, so they all understand your project. |
 
 ---
 

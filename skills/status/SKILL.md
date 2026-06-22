@@ -2,9 +2,9 @@
 name: status
 disable-model-invocation: true
 description: >
-  Read-only snapshot of the whole Muster pipeline - open specs, every task
-  bucketed by state, open PRs, recent activity, and a prioritised "what to do
-  next". Run any time to reorient. Reads only; changes nothing.
+  A quick snapshot of where everything stands - your specs, every task grouped
+  by status, open PRs, recent activity, and what to do next. Run any time to get
+  your bearings. Reads only; changes nothing.
 ---
 
 # Status
@@ -36,7 +36,7 @@ label sits in "awaiting triage". Within each bucket, oldest first.
 
 - **Awaiting triage** - `ready` without `agent-ready`/`needs-human-input`, or no state label
 - **Agent-ready** - `agent-ready` (show the `risk:*` label)
-- **Needs human input** - `needs-human-input`
+- **Needs you** - `needs-human-input`
 - **Needs info** - `needs-info`
 - **In review** - `in-review` (link the open PR)
 - **Needs work** - `needs-work`
@@ -49,19 +49,21 @@ label sits in "awaiting triage". Within each bucket, oldest first.
 ```
 ## Muster status
 
+Here's where everything stands right now.
+
 **Specs (open)**
 
 | Spec | Title | Tasks |
 |------|-------|-------|
 | #[N] | [title] | [X tasks: Y done, Z open] |
 
-### Pipeline
+### Where the tasks are
 
-| State | Count | Issues |
-|-------|-------|--------|
+| Status | Count | Issues |
+|--------|-------|--------|
 | Awaiting triage | [n] | #[N] [title] |
 | ✅ Agent-ready | [n] | #[N] (risk:[risk]) [title] |
-| ⚠️ Needs human input | [n] | #[N] [title] |
+| ⚠️ Needs you | [n] | #[N] [title] |
 | ⚠️ Needs info | [n] | #[N] [title] |
 | In review | [n] | #[N] [title] -> PR #[P] |
 | ⚠️ Needs work | [n] | #[N] [title] |
@@ -69,17 +71,20 @@ label sits in "awaiting triage". Within each bucket, oldest first.
 | ❌ Blocked | [n] | #[N] [title] |
 | ✅ Done (7d) | [n] | #[N] [title] |
 
+(Agent-ready = ready for me to build on my own · Needs you = needs a person ·
+In review = a PR is open, waiting for you to merge.)
+
 ### Open PRs
 
 | PR | Title | Branch |
 |----|-------|--------|
-| #[P] | [title] | [branch] - awaiting your merge |
+| #[P] | [title] | [branch] - waiting for you to merge |
 
 ### Recent commits on [base]
 
 [git log --oneline -10, as a fenced code block]
 
-**Next:** [prioritised, concrete actions - see below.]
+**Next:** [the one or two things most worth doing - see below.]
 ```
 
 Omit any pipeline row whose count is zero. Render the commit log inside a fenced

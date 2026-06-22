@@ -2,23 +2,23 @@
 name: review
 disable-model-invocation: true
 description: >
-  Review the changes since a fixed point along two tracks - Standards (does the
-  code follow this repo's documented conventions?) and Spec (does it implement
-  what the issue asked for?). Runs both as parallel sub-agents and reports one
-  compact verdict. Use before merging any PR, or to "review since X".
+  Check the changes two ways before you merge: do they follow your project's
+  conventions, and do they actually do what the issue asked for? Reports one
+  clear verdict - safe to merge or not. Use before merging any PR, or to
+  "review since X".
 ---
 
 # Review
 
-Two-track review of the diff between `HEAD` and a fixed point you supply:
+Check the changes between `HEAD` and a fixed point you supply, two ways:
 
-- Standards - does the code conform to this repo's documented conventions?
-- Spec - does the code faithfully implement the originating issue or spec?
+- **Conventions** - does the code follow your project's documented conventions?
+- **Matches the issue** - does it actually do what the originating issue or spec asked for?
 
-Both tracks run as parallel sub-agents so they don't pollute each other's
-context. Then this skill reports them side by side. A change can pass one and
-fail the other - correct code implementing the wrong thing, or the right
-behaviour built against the project's conventions - so the tracks stay separate.
+The two checks run separately, as parallel sub-agents, so neither colours the
+other. A change can pass one and fail the other - correct code that does the
+wrong thing, or the right behaviour built against your conventions - so they're
+kept apart and reported side by side.
 
 ## Step 1 - Pin the fixed point
 
@@ -68,7 +68,7 @@ Return ONLY a terse bullet list, one finding per line, no prose:
   - ❌ file:line - issue (cite standard)        # hard violation / security
   - ⚠️ file:line - issue (cite standard)        # judgement call
 Then a final line: VERDICT: PASS  or  VERDICT: FAIL
-If there are no findings: "- ✅ no standards violations" then VERDICT: PASS.
+If there are no findings: "- ✅ follows your conventions" then VERDICT: PASS.
 ```
 
 Spec sub-agent:
@@ -82,7 +82,7 @@ Return ONLY a terse bullet list, one finding per line, no prose:
   - ❌ issue - quote the spec line it relates to
   - ⚠️ issue - quote the spec line it relates to
 Then a final line: VERDICT: PASS  or  VERDICT: FAIL
-If everything is satisfied: "- ✅ all acceptance criteria met" then VERDICT: PASS.
+If everything is satisfied: "- ✅ does everything the issue asked for" then VERDICT: PASS.
 ```
 
 If the spec is missing, skip the Spec sub-agent and note it.
@@ -95,17 +95,19 @@ the sub-agent prose; use their bullets directly. Do not merge or rerank the trac
 ```
 ## Review - PR #N        (or the diff range)
 
-**Verdict: [✅ SAFE TO MERGE | ❌ DO NOT MERGE]** · Standards: [✅ | ❌] · Spec: [✅ | ❌]
+**Verdict: [✅ SAFE TO MERGE | ❌ DO NOT MERGE]** · Conventions: [✅ | ❌] · Matches the issue: [✅ | ❌]
 
-**Standards ([n])**
+I checked it two ways - against your conventions, and against what the issue asked for.
+
+**Conventions ([n])**
 - ❌ file:line - issue (security)
 - ⚠️ file:line - issue
 
-**Spec ([n])**
-- ✅ all acceptance criteria met
+**Matches the issue ([n])**
+- ✅ does everything the issue asked for
 
-**Worst:** [one line, or "none"]
-**Next:** fix and re-run /review, or merge on GitHub if safe to merge
+**Biggest concern:** [one line, or "none"]
+**Next:** fix and re-run /review, or merge on GitHub if it's safe
 ```
 
 Markers: ❌ blocker/fail · ⚠️ judgement call · ✅ pass.
