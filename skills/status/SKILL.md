@@ -1,5 +1,6 @@
 ---
 name: status
+disable-model-invocation: true
 description: >
   Read-only snapshot of the whole Muster pipeline - open specs, every task
   bucketed by state, open PRs, recent activity, and a prioritised "what to do

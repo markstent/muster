@@ -1,5 +1,6 @@
 ---
 name: think
+disable-model-invocation: true
 description: >
   Interrogate me about an idea until every branch of the decision tree is
   resolved. Use when I say "I want to build X", "I have an idea", or want to

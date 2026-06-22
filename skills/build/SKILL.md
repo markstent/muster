@@ -1,5 +1,6 @@
 ---
 name: build
+disable-model-invocation: true
 description: >
   Worker Coordinator. Picks up agent-ready tasks (max 3 per run), groups them
   by independence, spawns parallel Worker sub-agents that build with TDD,

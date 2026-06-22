@@ -1,5 +1,6 @@
 ---
 name: review
+disable-model-invocation: true
 description: >
   Review the changes since a fixed point along two tracks - Standards (does the
   code follow this repo's documented conventions?) and Spec (does it implement

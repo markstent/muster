@@ -1,10 +1,14 @@
 # Muster
 
-**A structured development system for Claude Code.** Seven commands take you
-from a half-formed idea to a merged pull request, with you in control at every
-gate.
+**A structured development system, shipped as Agent Skills - harness-agnostic.**
+Seven commands take you from a half-formed idea to a merged pull request, with
+you in control at every gate. Muster is not tied to any one tool: it ships as
+plain [Agent Skills](https://agentskills.io), so it runs in **Claude Code,
+Cursor, Codex, Gemini CLI, Mistral, pi**, and any other agent harness that reads
+the Agent Skills spec.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-spec-8A2BE2)](https://agentskills.io)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)](https://claude.com/claude-code)
 [![Last commit](https://img.shields.io/github/last-commit/markstent/muster)](https://github.com/markstent/muster/commits/main)
 [![Open issues](https://img.shields.io/github/issues/markstent/muster)](https://github.com/markstent/muster/issues)
@@ -55,12 +59,23 @@ Nothing is ever auto-merged. You are the merge gate, always.
 
 ### Prerequisites
 
-- [Claude Code](https://claude.com/claude-code) installed
+- Any agent harness that reads the [Agent Skills spec](https://agentskills.io).
+  Muster is harness-agnostic - it works in
+  [Claude Code](https://claude.com/claude-code),
+  [Cursor](https://cursor.com),
+  [Codex](https://openai.com/codex),
+  [Gemini CLI](https://github.com/google-gemini/gemini-cli),
+  [Mistral](https://mistral.ai),
+  [pi](https://pi.dev), and others. Any harness with a shell/bash tool
+  works; Muster needs no MCP server, it shells out to `gh` and `git` directly.
 - [GitHub CLI](https://cli.github.com/) installed and authenticated:
   ```bash
   gh auth login
   ```
 - A git remote pointing at GitHub
+
+> The plugin install (Option A) is Claude Code-specific. For every other harness,
+> use the skills tree directly - see [Other harnesses](#other-harnesses).
 
 ### Option A - plugin (recommended)
 
@@ -73,9 +88,9 @@ Inside Claude Code:
 
 Commands appear as `/muster:think`, `/muster:spec`, and so on.
 
-### Option B - symlink (bare command names)
+### Option B - symlink (bare command names, Claude Code)
 
-Clone and symlink the commands into `~/.claude/commands/` so they are available
+Clone and symlink the skills into `~/.claude/skills/` so they are available
 globally as `/think`, `/spec`, etc.:
 
 ```bash
@@ -86,9 +101,40 @@ Or manually:
 
 ```bash
 git clone https://github.com/markstent/muster.git ~/.muster
-mkdir -p ~/.claude/commands
-ln -sf ~/.muster/commands/*.md ~/.claude/commands/
+mkdir -p ~/.claude/skills
+for d in ~/.muster/skills/*/; do ln -sfn "$d" ~/.claude/skills/"$(basename "$d")"; done
 ```
+
+### Other harnesses
+
+Muster's seven commands are plain [Agent Skills](https://agentskills.io):
+`skills/<name>/SKILL.md`, each with `name` + `description` frontmatter. Any
+harness that reads the spec - **Cursor, Codex, Gemini CLI, Mistral, pi**, and
+the rest - picks them up. Copy or symlink the `skills/` tree into that tool's
+skills directory:
+
+```bash
+git clone https://github.com/markstent/muster.git ~/.muster
+
+# Consult your harness's docs for its skills directory, then copy the tree in.
+# A few examples (verify the exact path in each tool's docs):
+#   Cursor / Codex / Gemini CLI / OpenCode   per-tool skills dir
+#   Mistral (Vibe)   ~/.vibe/skills/   (user)   or   ./.vibe/skills/   (project)
+#   pi               per-tool skills dir
+cp -R ~/.muster/skills/* <that-harness's-skills-dir>/
+```
+
+The skill bodies are identical across harnesses and tool-neutral - they describe
+what the agent should do, not one tool's API. Cross-references between commands
+(`run /spec`, `run /triage`) resolve because the skill names match.
+
+One behaviour varies by harness: `/build` acts as a coordinator that fans out
+parallel Worker sub-agents to do the TDD work. Harnesses differ in whether and
+how they support parallel sub-agents; the skill degrades gracefully - worst case
+it does the work in the main thread instead of fanning out. The frontmatter
+field `disable-model-invocation: true` keeps each command slash-only in Claude
+Code (so the model never auto-fires `/build` or `/triage`); other harnesses
+ignore the unknown field.
 
 ### Updating
 
@@ -108,7 +154,9 @@ Run `/plugin` to confirm muster shows the new version.
 git -C ~/.muster pull
 ```
 
-The symlinks point at the files, so the new versions are live immediately.
+The symlinks point at the skill directories, so the new versions are live
+immediately. (On other harnesses that you installed by copying the tree, re-copy
+after pulling.)
 
 Each version's changes are on the
 [releases page](https://github.com/markstent/muster/releases).
@@ -440,16 +488,16 @@ build handles at most 3 tasks per run with at most 3 concurrent Workers.
 .claude-plugin/
   plugin.json        plugin manifest
   marketplace.json   makes this repo its own single-plugin marketplace
-commands/
-  think.md     -> /think
-  context.md   -> /context
-  spec.md      -> /spec
-  triage.md    -> /triage
-  build.md     -> /build
-  review.md    -> /review
-  status.md    -> /status
+skills/
+  think/SKILL.md     -> /think
+  context/SKILL.md   -> /context
+  spec/SKILL.md      -> /spec
+  triage/SKILL.md    -> /triage
+  build/SKILL.md     -> /build
+  review/SKILL.md    -> /review
+  status/SKILL.md    -> /status
 setup-labels.sh      create the GitHub labels (once per repo)
-install.sh           non-plugin install (clone + symlink commands)
+install.sh           non-plugin install (clone + symlink skills)
 README.md
 CONTRIBUTING.md
 LICENSE

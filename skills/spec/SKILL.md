@@ -1,5 +1,6 @@
 ---
 name: spec
+disable-model-invocation: true
 description: >
   Turn the resolved idea into a spec. Drafts the spec and all task slices into a
   single markdown file under docs/specs/, lets you edit it, then generates the

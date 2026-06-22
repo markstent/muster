@@ -1,6 +1,6 @@
 # Contributing to Muster
 
-Muster is a small, opinionated set of Claude Code commands. Contributions that
+Muster is a small, opinionated set of Agent Skills. Contributions that
 keep it focused and consistent are welcome.
 
 ## Project layout
@@ -9,13 +9,17 @@ keep it focused and consistent are welcome.
 .claude-plugin/
   plugin.json        plugin manifest
   marketplace.json   makes this repo its own single-plugin marketplace
-commands/            the seven slash commands (one .md per command)
+skills/              the seven skills (one <name>/SKILL.md per command)
 setup-labels.sh      creates the GitHub labels Muster uses
-install.sh           non-plugin install (clone + symlink commands)
+install.sh           non-plugin install (clone + symlink skills)
 ```
 
-Each command is a single Markdown file in `commands/` with YAML frontmatter
-(`name`, `description`) followed by the instructions Claude runs.
+Each command is a single `skills/<name>/SKILL.md` file with YAML frontmatter
+(`name`, `disable-model-invocation: true`, `description`) followed by the
+instructions the agent runs. `name` must match the directory name. The bodies
+are harness-agnostic: they speak in actions ("spawn a sub-agent", "read a
+file"), not one tool's API, so the same file works in Claude Code, Cursor,
+Codex, Gemini CLI, and any other reader of the Agent Skills spec.
 
 ## Editing a command
 
@@ -25,7 +29,7 @@ Each command is a single Markdown file in `commands/` with YAML frontmatter
   `/triage` is read-only on code, `/build` never pushes to main and never
   auto-merges, risk gates autonomy, and every gate waits for the user.
 - Use the shared vocabulary: the label system in the README, the `risk:*`
-  scheme, and the state machine in `triage.md` must stay consistent across
+  scheme, and the state machine in `skills/triage/SKILL.md` must stay consistent across
   every command.
 
 ## Output discipline

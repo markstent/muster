@@ -1,5 +1,6 @@
 ---
 name: triage
+disable-model-invocation: true
 description: >
   Manager Agent. Moves task issues through a state machine of triage roles,
   assesses risk, and decides what an autonomous agent may pick up. Read-only

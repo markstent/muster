@@ -4,7 +4,7 @@
     "name": "Mark Stent",
     "email": "mark@markstent.co.za"
   },
-  "description": "Muster: structured agentic development for Claude Code.",
+  "description": "Muster: structured agentic development, shipped as Agent Skills.",
   "plugins": [
     {
       "name": "muster",

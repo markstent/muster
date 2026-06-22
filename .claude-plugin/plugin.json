@@ -1,8 +1,8 @@
 {
   "name": "muster",
   "displayName": "Muster",
-  "description": "Structured agentic development for Claude Code. Seven commands take you from a half-formed idea to a merged pull request, with you in control at every gate.",
-  "version": "1.4.0",
+  "description": "Structured agentic development as Agent Skills. Seven commands take you from a half-formed idea to a merged pull request, with you in control at every gate. Works in Claude Code and any harness that reads the Agent Skills spec.",
+  "version": "2.0.0",
   "author": {
     "name": "Mark Stent",
     "email": "mark@markstent.co.za"
@@ -16,6 +16,8 @@
     "code-review",
     "agents",
     "github",
-    "slash-commands"
+    "slash-commands",
+    "agent-skills",
+    "skills"
   ]
 }

@@ -1,5 +1,6 @@
 ---
 name: context
+disable-model-invocation: true
 description: >
   Build and maintain CONTEXT.md - the shared domain memory every other Muster
   command reads. Run once per repo, then refresh when major concepts change or
