@@ -9,10 +9,18 @@ the Agent Skills spec.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-spec-8A2BE2)](https://agentskills.io)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)](https://claude.com/claude-code)
 [![Last commit](https://img.shields.io/github/last-commit/markstent/muster)](https://github.com/markstent/muster/commits/main)
 [![Open issues](https://img.shields.io/github/issues/markstent/muster)](https://github.com/markstent/muster/issues)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/markstent/muster/pulls)
+
+**Runs in:**
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-8A2BE2)](https://claude.com/claude-code)
+[![Cursor](https://img.shields.io/badge/Cursor-8A2BE2)](https://cursor.com)
+[![Codex](https://img.shields.io/badge/Codex-8A2BE2)](https://openai.com/codex)
+[![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-8A2BE2)](https://github.com/google-gemini/gemini-cli)
+[![Mistral](https://img.shields.io/badge/Mistral-8A2BE2)](https://mistral.ai)
+[![pi](https://img.shields.io/badge/pi-8A2BE2)](https://pi.dev)
+[![+ any Agent Skills harness](https://img.shields.io/badge/%2B%20any%20Agent%20Skills%20harness-grey)](https://agentskills.io)
 
 *Muster* (verb): to assemble and prepare a force for action. The system musters
 your ideas into specs, your specs into tasks, and a fleet of sub-agents into
