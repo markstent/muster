@@ -2,7 +2,7 @@
 name: status
 disable-model-invocation: true
 description: >
-  A quick snapshot of where everything stands - your specs, every task grouped
+  (Muster) A quick snapshot of where everything stands - your specs, every task grouped
   by status, open PRs, recent activity, and what to do next. Run any time to get
   your bearings. Reads only; changes nothing.
 ---

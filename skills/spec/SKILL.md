@@ -2,7 +2,7 @@
 name: spec
 disable-model-invocation: true
 description: >
-  Turn the agreed idea into a written spec and a set of small, buildable tasks -
+  (Muster) Turn the agreed idea into a written spec and a set of small, buildable tasks -
   saved as one file you can edit - then create the GitHub issues once you say go.
   Run after /think, or straight away if the idea is already clear. Won't
   re-interview you.

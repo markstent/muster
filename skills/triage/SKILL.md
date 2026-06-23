@@ -2,7 +2,7 @@
 name: triage
 disable-model-invocation: true
 description: >
-  Sorts your tasks, judges how risky each one is, and marks the safe ones ready
+  (Muster) Sorts your tasks, judges how risky each one is, and marks the safe ones ready
   to build on their own. Reads your code; only writes issue labels and comments,
   never code itself. Run after /spec, before /build.
 ---

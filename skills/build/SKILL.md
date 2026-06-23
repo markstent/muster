@@ -2,7 +2,7 @@
 name: build
 disable-model-invocation: true
 description: >
-  Builds the tasks triage marked ready - up to 3 at a time. Writes them
+  (Muster) Builds the tasks triage marked ready - up to 3 at a time. Writes them
   test-first, double-checks each one against your conventions and against what
   the issue asked for, shows you everything, and waits for your OK before
   opening any PR. Never merges on its own. Run after /triage.

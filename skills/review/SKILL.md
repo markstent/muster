@@ -2,7 +2,7 @@
 name: review
 disable-model-invocation: true
 description: >
-  Check the changes two ways before you merge: do they follow your project's
+  (Muster) Check the changes two ways before you merge: do they follow your project's
   conventions, and do they actually do what the issue asked for? Reports one
   clear verdict - safe to merge or not. Use before merging any PR, or to
   "review since X".

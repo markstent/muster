@@ -2,7 +2,7 @@
 name: context
 disable-model-invocation: true
 description: >
-  Write CONTEXT.md - the shared notes every other Muster command reads (your
+  (Muster) Write CONTEXT.md - the shared notes every other Muster command reads (your
   stack, your terms, your past decisions). Run once per repo, then refresh when
   something major changes or a past decision is reversed. Reads the repo; writes
   only CONTEXT.md.

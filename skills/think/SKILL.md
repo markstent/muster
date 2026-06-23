@@ -2,7 +2,7 @@
 name: think
 disable-model-invocation: true
 description: >
-  Talk through your idea, one question at a time, until every open question is
+  (Muster) Talk through your idea, one question at a time, until every open question is
   settled - so the plan is solid before any code gets written. Use when you say
   "I want to build X", "I have an idea", or want to pressure-test a plan. Writes
   nothing. Ends by pointing you to /spec.
